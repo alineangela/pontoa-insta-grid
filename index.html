@@ -152,72 +152,80 @@
   }
 
   /* ══ MODAL ══
-     Layout natural: modal é um container que rola por inteiro.
-     Imagem em 3:4, legenda completa abaixo — como o Instagram.
-     Centralizado na tela. */
+     Backdrop centraliza o modal na tela sem scroll.
+     O modal é dividido em duas partes:
+     - Imagem: bordas retas em cima, preenche a largura inteira
+     - Legenda: rola internamente se precisar
+  */
   .modal-backdrop {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.65); z-index: 1000;
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 24px 16px;
     backdrop-filter: blur(4px);
-    overflow-y: auto;
+    /* Sem overflow-y — o backdrop não rola, o modal não rola */
   }
   .modal-backdrop.open { display: flex; }
 
   .modal {
     background: #fff;
-    border-radius: 14px;
+    border-radius: 14px; /* arredondado em todos os cantos */
     width: 100%;
-    max-width: 340px;
-    /* Sem max-height fixo — cresce conforme o conteúdo, limitado pelo viewport */
-    max-height: 88vh;
-    overflow-y: auto;
+    max-width: 320px;
+    /* Altura máxima para caber na tela */
+    max-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* clip geral — sem scrollbar no modal */
     animation: modal-in 0.2s ease;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    /* Centraliza verticalmente via margin auto quando menor que a tela */
-    margin: auto;
-    flex-shrink: 0;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
   }
 
   @keyframes modal-in {
-    from { transform: scale(0.94); opacity: 0; }
+    from { transform: scale(0.93); opacity: 0; }
     to   { transform: scale(1);    opacity: 1; }
   }
 
-  /* Imagem: ocupa no máximo 50vh para sobrar espaço para a legenda */
-  .modal-img-wrap {
+  /* Área de mídia: sem arredondamento — o modal já tem border-radius
+     e overflow:hidden cuida das bordas da imagem */
+  .modal-media {
     width: 100%;
-    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
     background: #f0f0ee;
-    border-radius: 14px 14px 0 0;
-    /* Limita altura — a imagem cabe em ~metade da tela */
-    max-height: 50vh;
-  }
-  .modal-img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    max-height: 50vh;
+    overflow: hidden;
   }
 
-  /* Canva embed no modal — altura proporcional, clipa a barra inferior */
+  /* Imagem: cobre toda a área de mídia sem barras */
+  .modal-img-wrap {
+    width: 100%;
+    height: 52vh;
+    overflow: hidden;
+    background: #f0f0ee;
+  }
+  .modal-img {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Canva: mesma altura, iframe com extra para clicar a nav bar */
   .modal-canva-clip {
     width: 100%;
-    max-height: 50vh;
-    /* aspect-ratio não fixo — deixa o iframe definir a altura */
+    height: 52vh;
     overflow: hidden;
     position: relative;
     background: #f0f0ee;
-    border-radius: 14px 14px 0 0;
   }
   .modal-canva-frame {
-    position: relative;
+    position: absolute;
+    top: 0; left: 0;
     width: 100%;
-    /* iframe ocupa 50vh + 52px extras para empurrar a nav bar para fora */
-    height: calc(50vh + 52px);
+    height: calc(52vh + 52px); /* +52px empurra nav bar do Canva pra fora */
     border: none;
     display: block;
   }
@@ -225,26 +233,30 @@
   /* Carrossel */
   .carousel {
     position: relative; width: 100%;
-    max-height: 50vh; overflow: hidden;
+    height: 52vh; overflow: hidden;
     background: #f0f0ee;
-    border-radius: 14px 14px 0 0;
   }
-  .carousel-track { display: flex; transition: transform 0.32s ease; }
-  .carousel-slide { min-width: 100%; }
-  .carousel-slide img { width: 100%; max-height: 50vh; object-fit: cover; display: block; }
+  .carousel-track { display: flex; height: 100%; transition: transform 0.32s ease; }
+  .carousel-slide { min-width: 100%; height: 100%; }
+  .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #1a1a1a; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 3; }
   .carousel-arrow:hover { background: #fff; }
   .carousel-arrow:disabled { opacity: 0.2; pointer-events: none; }
   .carousel-arrow.prev { left: 8px; }
   .carousel-arrow.next { right: 8px; }
   .carousel-dots { position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 3; }
-  .carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background 0.15s; }
+  .carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; }
   .carousel-dot.active { background: #fff; }
 
-  .modal-no-img { width: 100%; height: 200px; background: #f0f0ee; border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
+  .modal-no-img { width: 100%; height: 52vh; background: #f0f0ee; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
 
-  /* Corpo: sem scroll próprio — o modal inteiro rola */
-  .modal-body { padding: 14px 16px 20px; }
+  /* Legenda: scroll somente aqui, altura máxima controlada pelo flex */
+  .modal-body {
+    padding: 14px 16px 18px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0; /* necessário para overflow funcionar em flex */
+  }
 
   .modal-caption {
     font-size: 13px; color: #333; line-height: 1.7;
@@ -254,13 +266,14 @@
   }
   .modal-meta { font-size: 11px; color: #aaa; border-top: 1px solid #f0f0ee; padding-top: 9px; }
 
+  /* Botão fechar: absoluto dentro do modal */
   .modal-close {
-    position: fixed; top: 14px; right: 14px;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(0,0,0,0.5); border: none; color: #fff;
-    font-size: 14px; cursor: pointer;
+    position: absolute; top: 10px; right: 10px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(0,0,0,0.45); border: none; color: #fff;
+    font-size: 13px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    z-index: 1010; transition: background 0.15s;
+    z-index: 20; transition: background 0.15s;
   }
   .modal-close:hover { background: rgba(0,0,0,0.7); }
 
@@ -454,23 +467,36 @@ function toCanvaEmbedModal(url) {
   return url.split('?')[0] + '?embed';
 }
 
-/* Escala o iframe do Canva para preencher a célula e
-   empurra a barra de nav inferior para FORA do clip (overflow:hidden).
-   O Canva embed tem ~1067px de conteúdo + ~52px de nav bar = ~1119px total.
-   Escalamos pelo conteúdo útil → nav bar fica abaixo da célula → clipada. */
+/* Escala o iframe do Canva usando ResizeObserver —
+   só calcula quando a célula tem dimensões reais.
+   Isso evita escala errada quando requestAnimationFrame
+   dispara antes do layout estar pronto. */
 function scaleCanvaCell(wrap, iframe) {
-  const cellW  = wrap.offsetWidth  || 140;
-  const cellH  = wrap.offsetHeight || Math.round(cellW * 4 / 3);
-  const srcW   = 800;
-  const navBar = 52;    // px da barra de nav do Canva no espaço do iframe
-  const srcH   = 1067;  // altura do conteúdo SEM a nav bar
-  // Escalamos para que o CONTEÚDO (sem nav) preencha a célula
-  const scale  = Math.max(cellW / srcW, cellH / srcH);
-  iframe.style.width           = srcW + 'px';
-  iframe.style.height          = (srcH + navBar) + 'px'; // inclui a barra
-  iframe.style.transform       = `scale(${scale})`;
-  iframe.style.transformOrigin = 'top left';
-  // overflow:hidden no wrapper clipa os (navBar*scale)px que extravasam embaixo
+  function doScale() {
+    const cellW = wrap.offsetWidth;
+    const cellH = wrap.offsetHeight;
+    if (!cellW || !cellH) return false;
+
+    const srcW   = 800;
+    const navBar = 52;
+    const srcH   = 1067;
+    const scale  = Math.max(cellW / srcW, cellH / srcH);
+
+    iframe.style.width           = srcW + 'px';
+    iframe.style.height          = (srcH + navBar) + 'px';
+    iframe.style.transform       = `scale(${scale})`;
+    iframe.style.transformOrigin = 'top left';
+    return true;
+  }
+
+  // Tenta imediatamente
+  if (!doScale()) {
+    // Se ainda não tem dimensões, usa ResizeObserver
+    const ro = new ResizeObserver(() => {
+      if (doScale()) ro.disconnect();
+    });
+    ro.observe(wrap);
+  }
 }
 
 /* ── STATE ── */
@@ -603,9 +629,7 @@ function renderGrid() {
       blocker.className = 'cell-canva-blocker';
       wrap.appendChild(blocker);
 
-      requestAnimationFrame(() => scaleCanvaCell(wrap, iframe));
-      iframe.addEventListener('load', () => scaleCanvaCell(wrap, iframe));
-
+      scaleCanvaCell(wrap, iframe);
       cell.appendChild(wrap);
 
     } else if (post.imageUrl) {
