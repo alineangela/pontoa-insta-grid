@@ -1,6 +1,6 @@
 // netlify/functions/get-posts.js
 // Busca todos os dados de uma única base de dados com Tipo = Perfil | Destaque | Post
-// Ordenação de destaques: propriedade "Ordem" (número) → fallback: posição natural na base
+// Prioridade de imagem: canvaUrl > imageUrl
 
 exports.handler = async () => {
   const token = process.env.NOTION_TOKEN;
@@ -14,8 +14,6 @@ exports.handler = async () => {
   }
 
   try {
-    // Busca sem sort forçado para preservar a ordem natural da base de dados
-    // (usada como fallback para destaques sem propriedade Ordem preenchida)
     const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
       method: 'POST',
       headers: {
@@ -41,42 +39,46 @@ exports.handler = async () => {
     const getUrl   = p => p?.url || null;
     const getSel   = p => p?.select?.name || null;
 
-    function getImage(props, page) {
+    function getMedia(props, page) {
+      // Tenta primeiro a propriedade de arquivo (imagem enviada diretamente)
       const fileProp =
         props['Imagem'] || props['Image'] || props['Capa'] || props['Cover'] ||
         Object.values(props).find(p => p.type === 'files');
 
-      let imageUrl = null, imageType = 'none';
+      let imageUrl  = null;
+      let canvaUrl  = null;
 
       if (fileProp?.files?.length > 0) {
         const f = fileProp.files[0];
-        imageUrl  = f.type === 'external' ? f.external.url : f.file?.url;
-        imageType = 'file';
+        imageUrl = f.type === 'external' ? f.external.url : f.file?.url;
       }
 
-      if (!imageUrl) {
-        const urlProp =
-          props['Link'] || props['URL'] ||
-          Object.values(props).find(p => p.type === 'url');
-        if (urlProp?.url) {
-          imageUrl  = urlProp.url;
-          imageType = imageUrl.includes('canva.com') ? 'canva' : 'url';
+      // Tenta propriedade URL — separa Canva de imagem comum
+      const urlProp =
+        props['Link'] || props['URL'] ||
+        Object.values(props).find(p => p.type === 'url');
+
+      if (urlProp?.url) {
+        const u = urlProp.url;
+        if (u.includes('canva.com')) {
+          canvaUrl = u; // guarda separado — tem prioridade no display
+        } else if (!imageUrl) {
+          imageUrl = u; // só usa como imagem se não tiver arquivo
         }
       }
 
-      if (!imageUrl && page.cover) {
-        imageUrl  = page.cover.type === 'external'
+      // Fallback: capa da página no Notion
+      if (!imageUrl && !canvaUrl && page.cover) {
+        imageUrl = page.cover.type === 'external'
           ? page.cover.external.url
           : page.cover.file?.url;
-        imageType = 'cover';
       }
 
-      return { imageUrl, imageType };
+      return { imageUrl, canvaUrl };
     }
 
     function isPinned(props) {
-      const fixarProp =
-        props['Fixar'] || props['Pin'] || props['Fixado'];
+      const fixarProp = props['Fixar'] || props['Pin'] || props['Fixado'];
       if (!fixarProp) return false;
       const VALS = ['fixar','pin','fixado','pinned'];
       if (fixarProp.type === 'select')
@@ -92,8 +94,6 @@ exports.handler = async () => {
     const destaques = [];
     const posts     = [];
 
-    // A API retorna na ordem natural da view padrão da base.
-    // Guardamos o índice de posição para usar como fallback de ordenação.
     data.results.forEach((page, naturalIndex) => {
       const props = page.properties;
       const tipo  = getSel(props['Tipo'] || props['Type']) || 'Post';
@@ -103,7 +103,7 @@ exports.handler = async () => {
         Object.values(props).find(p => p.type === 'title');
       const nome = getTitle(titleProp);
 
-      const { imageUrl, imageType } = getImage(props, page);
+      const { imageUrl, canvaUrl } = getMedia(props, page);
 
       if (tipo === 'Perfil') {
         perfil = {
@@ -113,31 +113,21 @@ exports.handler = async () => {
           seguidores: getNum(props['Seguidores'] || props['Followers']),
           seguindo:   getNum(props['Seguindo']   || props['Following']),
           imageUrl,
-          imageType
+          canvaUrl
         };
 
       } else if (tipo === 'Destaque') {
         const ordemProp = props['Ordem'] || props['Order'];
-        const ordem     = getNum(ordemProp);
-
         destaques.push({
-          id:           page.id,
+          id:        page.id,
           nome,
-          descricao:    getText(
-            props['Descrição do Destaque'] ||
-            props['Descrição'] ||
-            props['Description']
-          ),
-          // Se Ordem estiver preenchida usa ela; senão usa posição natural
-          // multiplicada por 1000 para nunca conflitar com valores reais
-          ordem:        ordem !== null ? ordem : naturalIndex * 1000,
-          ordemManual:  ordem !== null, // flag: foi preenchido manualmente?
+          descricao: getText(props['Descrição do Destaque'] || props['Descrição'] || props['Description']),
+          ordem:     getNum(ordemProp) !== null ? getNum(ordemProp) : naturalIndex * 1000,
           imageUrl,
-          imageType
+          canvaUrl
         });
 
       } else {
-        // Post (valor padrão quando Tipo não está preenchido)
         const dateProp =
           props['Data'] || props['Data de publicação'] ||
           props['Publish Date'] || props['Date'] ||
@@ -145,7 +135,6 @@ exports.handler = async () => {
 
         const legendaProp =
           props['Legenda'] || props['Caption'] ||
-          // evita pegar Bio por engano — só pega rich_text que não seja Bio
           Object.values(props).find(p =>
             p.type === 'rich_text' &&
             !['Bio','Biografia','Descrição do Destaque','Descrição'].includes(
@@ -154,23 +143,18 @@ exports.handler = async () => {
           );
 
         posts.push({
-          id:        page.id,
-          title:     nome,
-          legenda:   getText(legendaProp),
-          date:      getDate(dateProp),
+          id:       page.id,
+          title:    nome,
+          legenda:  getText(legendaProp),
+          date:     getDate(dateProp),
           imageUrl,
-          imageType,
-          pinned:    isPinned(props)
+          canvaUrl,
+          pinned:   isPinned(props)
         });
       }
     });
 
-    // ── Ordenações finais ────────────────────────────────────────────────
-
-    // Destaques: por ordem (numérica, já com fallback de posição natural)
     destaques.sort((a, b) => a.ordem - b.ordem);
-
-    // Posts: por data descendente
     posts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
     return {
