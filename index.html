@@ -33,29 +33,95 @@
   .initial-loading { padding: 48px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; color: #aaa; font-size: 12px; }
   .spinner { width: 22px; height: 22px; border: 2px solid #eee; border-top-color: #1a1a1a; border-radius: 50%; animation: spin-icon 0.7s linear infinite; }
 
-  /* ══ PROFILE ══ */
+  /* ══ PROFILE — layout Instagram fiel ══ */
   .profile-section { padding: 16px 16px 0; }
-  .profile-top { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
-  .avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; display: block; border: 2px solid #dbdbdb; flex-shrink: 0; }
-  .avatar-placeholder { width: 72px; height: 72px; border-radius: 50%; background: #efefef; border: 2px solid #dbdbdb; display: flex; align-items: center; justify-content: center; color: #aaa; flex-shrink: 0; }
-  .stats-row { display: flex; flex: 1; justify-content: space-around; }
-  .stat-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
-  .stat-num { font-size: 16px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.02em; }
-  .stat-label { font-size: 12px; color: #1a1a1a; }
-  .profile-name { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
-  .profile-bio { font-size: 13px; color: #1a1a1a; line-height: 1.55; margin-bottom: 5px; white-space: pre-line; }
-  .profile-link { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #00376b; font-weight: 500; text-decoration: none; margin-bottom: 12px; }
+
+  .profile-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* Avatar: 77px como no Instagram */
+  .avatar {
+    width: 77px; height: 77px;
+    border-radius: 50%; object-fit: cover;
+    display: block; border: 2px solid #dbdbdb;
+    flex-shrink: 0;
+  }
+  .avatar-placeholder {
+    width: 77px; height: 77px; border-radius: 50%;
+    background: #efefef; border: 2px solid #dbdbdb;
+    display: flex; align-items: center; justify-content: center;
+    color: #aaa; flex-shrink: 0;
+  }
+
+  /* Lado direito: nome em cima, stats embaixo */
+  .profile-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .profile-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: -0.01em;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 0;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 4px;
+    margin-right: 20px;
+  }
+
+  .stat-num {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 400;
+  }
+
+  /* Bio abaixo do bloco avatar+stats */
+  .profile-bio {
+    font-size: 13px;
+    color: #1a1a1a;
+    line-height: 1.55;
+    margin-bottom: 5px;
+    white-space: pre-line;
+  }
+
+  .profile-link {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 13px; color: #00376b; font-weight: 500;
+    text-decoration: none; margin-bottom: 12px;
+  }
   .profile-link:hover { text-decoration: underline; }
 
-  /* ══ HIGHLIGHTS — sempre anel cinza ══ */
+  /* ══ HIGHLIGHTS — anel sempre cinza ══ */
   .highlights-section { padding: 4px 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .highlights-section::-webkit-scrollbar { display: none; }
   .highlights-row { display: flex; gap: 16px; padding: 0 16px; width: max-content; }
   .highlight-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; cursor: pointer; }
   .highlight-ring {
     width: 64px; height: 64px; border-radius: 50%;
-    padding: 2.5px;
-    background: #dbdbdb; /* sempre cinza, sem gradiente */
+    padding: 2.5px; background: #dbdbdb;
     display: flex; align-items: center; justify-content: center;
   }
   .highlight-inner { width: 100%; height: 100%; border-radius: 50%; background: #efefef; overflow: hidden; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; color: #aaa; }
@@ -104,20 +170,22 @@
 
   /* ══ GRID 3:4 ══ */
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #dbdbdb; }
+
   .cell { position: relative; aspect-ratio: 3/4; background: #f2f2f0; overflow: hidden; cursor: pointer; user-select: none; }
   .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; pointer-events: none; }
   .cell:hover img { transform: scale(1.04); }
 
-  /* Célula Canva: iframe miniatura sem interação */
+  /* Canva: iframe miniatura — pointer-events:none = sem hover = sem toolbar */
   .cell-canva-wrap {
-    width: 100%; height: 100%; position: relative; overflow: hidden; background: #f5f2ff;
+    width: 100%; height: 100%; position: relative;
+    overflow: hidden; background: #000;
   }
   .cell-canva-iframe {
     position: absolute;
     top: 0; left: 0;
-    width: 600px; height: 800px; /* tamanho real do iframe */
-    transform-origin: top left;
-    border: none; pointer-events: none;
+    border: none;
+    pointer-events: none;
+    /* tamanho e escala calculados via JS */
   }
 
   .cell-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%); padding: 36px 9px 9px; transform: translateY(100%); transition: transform 0.25s ease; pointer-events: none; }
@@ -150,44 +218,60 @@
   .brand a:hover { color: #555; }
 
   /* ══ MODAL ══
-     Topo: bordas retas (0px) — a imagem ocupa toda a área
-     Base: bordas arredondadas (14px) */
+     Topo reto (bordas 0), base arredondada (14px)
+     Mídia exatamente 3:4 — imagem inteira visível */
   .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
   .modal-backdrop.open { display: flex; }
+
   .modal {
     background: #fff;
-    border-radius: 0 0 14px 14px; /* bordas retas em cima, arredondadas embaixo */
+    border-radius: 0 0 14px 14px;
     max-width: 380px; width: 100%;
-    max-height: 92vh; overflow: hidden;
+    max-height: 94vh;
     display: flex; flex-direction: column;
-    animation: modal-in 0.2s ease; position: relative;
+    overflow: hidden;
+    animation: modal-in 0.2s ease;
+    position: relative;
   }
   @keyframes modal-in { from { transform: scale(0.95) translateY(8px); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-  /* Área de mídia — topo completamente reto */
+  /* Área de mídia: proporção 3:4 exata, sem arredondamento */
   .modal-media {
-    width: 100%; flex-shrink: 0;
-    overflow: hidden; background: #111;
-    position: relative;
-    border-radius: 0; /* sem arredondamento no topo */
-  }
-
-  /* Imagem sem corte, formato preservado */
-  .modal-img {
-    width: 100%; display: block;
-    object-fit: contain;
-    max-height: 58vh;
+    width: 100%;
+    aspect-ratio: 3 / 4;   /* altura = 4/3 × largura — exibe a imagem inteira */
+    flex-shrink: 0;
+    overflow: hidden;
     background: #111;
+    position: relative;
+    border-radius: 0;
   }
 
-  /* Canva embed */
-  .modal-canva-frame { width: 100%; height: 58vh; border: none; display: block; }
+  /* Imagem: cover dentro de container 3:4 = sem barras, sem corte para imgs 3:4 */
+  .modal-img {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: cover;
+  }
 
-  /* ── CARROSSEL ── */
-  .carousel { position: relative; overflow: hidden; background: #111; }
-  .carousel-track { display: flex; transition: transform 0.32s ease; }
-  .carousel-slide { min-width: 100%; display: flex; align-items: center; justify-content: center; background: #111; }
-  .carousel-slide img { width: 100%; max-height: 58vh; object-fit: contain; display: block; background: #111; }
+  /* Canva embed no modal — ocupa 3:4 inteiro, toolbar escondida via translate */
+  .modal-canva-wrap {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .modal-canva-frame {
+    width: 100%;
+    /* Aumenta a altura para empurrar a toolbar do Canva pra fora do clip */
+    height: calc(100% + 56px);
+    border: none;
+    display: block;
+  }
+
+  /* Carrossel */
+  .carousel { position: relative; width: 100%; height: 100%; overflow: hidden; background: #111; }
+  .carousel-track { display: flex; height: 100%; transition: transform 0.32s ease; }
+  .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #111; }
+  .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .carousel-arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
@@ -201,18 +285,15 @@
   .carousel-arrow:disabled { opacity: 0.25; pointer-events: none; }
   .carousel-arrow.prev { left: 9px; }
   .carousel-arrow.next { right: 9px; }
-
   .carousel-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
   .carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background 0.15s; }
   .carousel-dot.active { background: #fff; }
 
-  /* Sem imagem */
-  .modal-no-img { width: 100%; height: 220px; background: #f2f2f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
+  .modal-no-img { width: 100%; height: 100%; background: #f2f2f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
 
-  /* Corpo do modal — scroll somente aqui */
-  .modal-body { padding: 15px 16px 18px; overflow-y: auto; max-height: 38vh; }
+  /* Corpo do modal: scroll somente aqui */
+  .modal-body { padding: 14px 16px 18px; overflow-y: auto; }
 
-  /* Sem título no modal — apenas legenda e meta */
   .modal-caption {
     font-size: 13px; color: #333; line-height: 1.7;
     margin-bottom: 10px;
@@ -231,7 +312,7 @@
   }
   .modal-close:hover { background: rgba(0,0,0,0.7); }
 
-  /* Selo Canva no modal (mantido) */
+  /* Selo Canva */
   .canva-badge {
     position: absolute; top: 10px; left: 10px;
     background: rgba(255,255,255,0.92); border-radius: 20px;
@@ -249,21 +330,37 @@
 <body>
 <div class="widget" id="widget">
 
-  <!-- PROFILE -->
+  <!-- PROFILE — layout Instagram fiel -->
   <div class="profile-section" id="profileSection">
     <div class="profile-top">
+      <!-- Avatar -->
       <img class="avatar" id="profileAvatar" src="" alt="Foto de perfil" style="display:none">
       <div class="avatar-placeholder" id="avatarPlaceholder">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
       </div>
-      <div class="stats-row">
-        <div class="stat-item"><span class="stat-num" id="statPosts">—</span><span class="stat-label">posts</span></div>
-        <div class="stat-item"><span class="stat-num" id="statSeguidores">—</span><span class="stat-label">seguidores</span></div>
-        <div class="stat-item"><span class="stat-num" id="statSeguindo">—</span><span class="stat-label">seguindo</span></div>
+      <!-- Nome + stats à direita do avatar -->
+      <div class="profile-right">
+        <div class="profile-name" id="profileName"></div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-num" id="statPosts">—</span>
+            <span class="stat-label">posts</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="statSeguidores">—</span>
+            <span class="stat-label">seguidores</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="statSeguindo">—</span>
+            <span class="stat-label">seguindo</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="profile-name" id="profileName"></div>
-    <div class="profile-bio"  id="profileBio"></div>
+    <!-- Bio e link abaixo, largura total -->
+    <div class="profile-bio" id="profileBio"></div>
     <a href="#" class="profile-link" id="profileLink" style="display:none">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00376b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -370,19 +467,29 @@ function makePinSvg() {
   return s;
 }
 
-/* ── CANVA EMBED URL ── */
+/* ── CANVA ── */
 function toCanvaEmbed(url) {
   return url.split('?')[0] + '?embed';
 }
 
-/* Escala o iframe Canva para caber na célula do grid */
-function scaleCanvaIframe(wrap, iframe) {
-  const W = wrap.offsetWidth  || 139;
-  const H = wrap.offsetHeight || 185;
-  const scaleX = W / 600;
-  const scaleY = H / 800;
-  const scale  = Math.max(scaleX, scaleY);
-  iframe.style.transform = `scale(${scale})`;
+/* Escala o iframe do Canva para preencher a célula do grid
+   sem mostrar a toolbar (que fica no fundo do iframe) */
+function scaleCanvaCell(wrap, iframe) {
+  // A célula tem aspect-ratio 3:4 — pega a largura real
+  const cellW = wrap.offsetWidth  || 140;
+  const cellH = wrap.offsetHeight || Math.round(cellW * 4 / 3);
+
+  // O Canva embed renderiza internamente num viewport de ~800×1067 (3:4)
+  const srcW = 800;
+  const srcH = 1067;
+
+  // Escala para cobrir toda a célula
+  const scale = Math.max(cellW / srcW, cellH / srcH);
+
+  iframe.style.width  = srcW + 'px';
+  iframe.style.height = srcH + 'px';
+  iframe.style.transform       = `scale(${scale})`;
+  iframe.style.transformOrigin = 'top left';
 }
 
 /* ── STATE ── */
@@ -461,7 +568,7 @@ function renderHighlights(destaques) {
   section.style.display = '';
   destaques.forEach(h => {
     const item  = document.createElement('div'); item.className = 'highlight-item';
-    const ring  = document.createElement('div'); ring.className = 'highlight-ring'; // sempre cinza
+    const ring  = document.createElement('div'); ring.className = 'highlight-ring';
     const inner = document.createElement('div'); inner.className = 'highlight-inner';
     if (h.imageUrl) {
       const img = document.createElement('img'); img.src = h.imageUrl; img.alt = h.nome; img.loading = 'lazy';
@@ -499,22 +606,21 @@ function renderGrid() {
     const cell = document.createElement('div');
     cell.className = 'cell'; cell.dataset.idx = String(idx);
 
-    // Prioridade: canvaUrl (iframe preview) > imageUrl > placeholder
     if (post.canvaUrl) {
-      // Mostra a primeira página do design Canva via iframe miniatura
+      // Canva: iframe miniatura sem toolbar (pointer-events:none + escala calculada)
       const wrap = document.createElement('div');
       wrap.className = 'cell-canva-wrap';
 
       const iframe = document.createElement('iframe');
       iframe.className = 'cell-canva-iframe';
       iframe.src = toCanvaEmbed(post.canvaUrl);
-      iframe.setAttribute('loading', 'lazy');
       iframe.setAttribute('scrolling', 'no');
+      // pointer-events:none já no CSS — sem hover = toolbar não aparece
       wrap.appendChild(iframe);
 
-      // Escala o iframe quando carregado e quando a célula tiver tamanho
-      requestAnimationFrame(() => scaleCanvaIframe(wrap, iframe));
-      iframe.addEventListener('load', () => scaleCanvaIframe(wrap, iframe));
+      // Escala após render da célula
+      requestAnimationFrame(() => scaleCanvaCell(wrap, iframe));
+      iframe.addEventListener('load', () => scaleCanvaCell(wrap, iframe));
 
       cell.appendChild(wrap);
 
@@ -530,7 +636,6 @@ function renderGrid() {
 
     if (post.pinned) cell.appendChild(makePinSvg());
 
-    // Overlay de hover — mostra título (não aparece no modal)
     const ov = document.createElement('div'); ov.className = 'cell-overlay';
     ov.innerHTML = `<div class="cell-overlay-date">${esc(fmtShort(post.date))}</div>
       <div class="cell-overlay-title">${esc(post.title)}</div>`;
@@ -555,47 +660,39 @@ function showPlaceholder(cell) {
   cell.appendChild(ph);
 }
 
-/* ── MODAL ──
-   - Sem título
-   - Canva: iframe embed com badge
-   - Imagens múltiplas: carrossel com setas e dots
-   - Legenda com parágrafos preservados, limite 2200 chars
-*/
+/* ── MODAL ── */
 function openModal(idx) {
   const post  = displayPosts[idx]; if (!post) return;
   const media = document.getElementById('modalMedia');
   media.innerHTML = '';
 
   if (post.canvaUrl) {
-    // ── Canva iframe com badge e navegação nativa de páginas
     const badge = document.createElement('div');
     badge.className = 'canva-badge';
     badge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#7c3aed"/></svg> Canva`;
     media.appendChild(badge);
 
+    const wrap = document.createElement('div');
+    wrap.className = 'modal-canva-wrap';
     const iframe = document.createElement('iframe');
     iframe.className = 'modal-canva-frame';
     iframe.src = toCanvaEmbed(post.canvaUrl);
     iframe.allowFullscreen = true;
     iframe.setAttribute('loading', 'lazy');
-    media.appendChild(iframe);
+    wrap.appendChild(iframe);
+    media.appendChild(wrap);
 
   } else if (post.images && post.images.length > 1) {
-    // ── Carrossel de múltiplas imagens
     buildCarousel(media, post.images);
-
   } else if (post.imageUrl) {
-    // ── Imagem única
     const img = document.createElement('img');
     img.className = 'modal-img';
     img.src = post.imageUrl; img.alt = post.title;
     media.appendChild(img);
-
   } else {
     media.innerHTML = `<div class="modal-no-img">Sem imagem</div>`;
   }
 
-  // Sem título no modal — apenas legenda
   const captionEl = document.getElementById('modalCaption');
   if (post.legenda) {
     const text = post.legenda.length > CAPTION_LIMIT
@@ -615,7 +712,6 @@ function openModal(idx) {
 /* ── CARROSSEL ── */
 function buildCarousel(container, images) {
   let current = 0;
-
   const carousel = document.createElement('div'); carousel.className = 'carousel';
   const track    = document.createElement('div'); track.className = 'carousel-track';
 
@@ -624,15 +720,12 @@ function buildCarousel(container, images) {
     const img   = document.createElement('img'); img.src = url; img.loading = 'lazy';
     slide.appendChild(img); track.appendChild(slide);
   });
-
   carousel.appendChild(track);
 
-  // Setas
   const prev = document.createElement('button'); prev.className = 'carousel-arrow prev'; prev.textContent = '‹'; prev.disabled = true;
   const next = document.createElement('button'); next.className = 'carousel-arrow next'; next.textContent = '›';
-
-  // Dots
   const dotsEl = document.createElement('div'); dotsEl.className = 'carousel-dots';
+
   const dots = images.map((_, i) => {
     const d = document.createElement('div'); d.className = 'carousel-dot' + (i===0?' active':'');
     d.addEventListener('click', () => goTo(i));
@@ -649,7 +742,6 @@ function buildCarousel(container, images) {
 
   prev.addEventListener('click', () => goTo(current - 1));
   next.addEventListener('click', () => goTo(current + 1));
-
   carousel.appendChild(prev); carousel.appendChild(next); carousel.appendChild(dotsEl);
   container.appendChild(carousel);
 }
@@ -696,8 +788,7 @@ function toggleReorder() {
   renderGrid();
 }
 function cancelReorder() {
-  dragMode = false;
-  displayPosts = originalPosts.map(p=>({...p}));
+  dragMode = false; displayPosts = originalPosts.map(p=>({...p}));
   document.getElementById('reorderBar').classList.remove('visible');
   document.getElementById('reorderBtn').textContent = '⇅ Editar ordem';
   renderGrid();
