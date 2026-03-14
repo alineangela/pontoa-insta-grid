@@ -1,848 +1,353 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grid de Conteúdo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html
 
-  body {
-    background: transparent;
-    font-family: -apple-system, 'Segoe UI', 'DM Sans', sans-serif;
-    color: #1a1a1a;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 0;
-  }
 
-  .widget {
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid #e0e0de;
-    overflow: visible;
-    position: relative;
-  }
 
-  /* ══ LOADING ══ */
-  .initial-loading { padding: 48px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; color: #aaa; font-size: 12px; }
-  .spinner { width: 22px; height: 22px; border: 2px solid #eee; border-top-color: #1a1a1a; border-radius: 50%; animation: spin-icon 0.7s linear infinite; }
 
-  /* ══ PROFILE — layout Instagram fiel ══ */
-  .profile-section { padding: 16px 16px 0; }
 
-  .profile-top {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 10px;
-  }
 
-  /* Avatar: 77px como no Instagram */
-  .avatar {
-    width: 77px; height: 77px;
-    border-radius: 50%; object-fit: cover;
-    display: block; border: 2px solid #dbdbdb;
-    flex-shrink: 0;
-  }
-  .avatar-placeholder {
-    width: 77px; height: 77px; border-radius: 50%;
-    background: #efefef; border: 2px solid #dbdbdb;
-    display: flex; align-items: center; justify-content: center;
-    color: #aaa; flex-shrink: 0;
-  }
 
-  /* Lado direito: nome em cima, stats embaixo */
-  .profile-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  /*AJUSTES SOLICITADOS E COMENTÁRIOS PARA FACILITAR O ENTENDIMENTO*//* Ajuste 3: Responsividade ao incorporar em Notion (sem altura fixa) /
+/ Removemos a altura mínima do corpo da página (min-height: 100vh) /
+/ Isso permite que o widget se ajuste ao espaço disponível dentro de onde ele for incorporado, /
+/ como no Notion, evitando barras de rolagem desnecessárias para o widget em si. /
+body {
+background: transparent;
+font-family: -apple-system, 'Segoe UI', 'DM Sans', sans-serif;
+color: #1a1a1a;
+min-height: auto; / ANTES: min-height: 100vh; -> AGORA: auto para se ajustar ao conteúdo /
+display: flex;
+align-items: flex-start; / Mantém o widget alinhado ao topo */
+justify-content: center;
+padding: 0;
+}/* O widget agora também terá sua altura ajustada automaticamente ao conteúdo /
+.widget {
+width: 100%;
+max-width: 420px;
+background: #fff;
+border-radius: 14px;
+border: 1px solid #e0e0de;
+overflow: visible;
+position: relative;
+height: auto; / Adicionado: Garante que a altura do widget se ajuste ao seu conteúdo */
+}/* O modal também terá sua altura máxima ajustada para ser mais flexível /
+.modal {
+background: #fff;
+border-radius: 0 0 14px 14px;
+max-width: 380px; width: 100%;
+max-height: 90vh; / ANTES: 94vh; -> AGORA: 90vh para deixar um pouco mais de margem */
+display: flex; flex-direction: column;
+overflow: hidden;
+animation: modal-in 0.2s ease;
+position: relative;
+}/*FIM DOS AJUSTES DE RESPONSIVIDADE*/*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }/* ══ LOADING ══ */
+.initial-loading { padding: 48px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; color: #aaa; font-size: 12px; }
+.spinner { width: 22px; height: 22px; border: 2px solid #eee; border-top-color: #1a1a1a; border-radius: 50%; animation: spin-icon 0.7s linear infinite; }/* ══ PROFILE — layout Instagram fiel ══ */
+.profile-section { padding: 16px 16px 0; }.profile-top {
+display: flex;
+align-items: center;
+gap: 20px;
+margin-bottom: 10px;
+}/* Avatar: 77px como no Instagram */
+.avatar {
+width: 77px; height: 77px;
+border-radius: 50%; object-fit: cover;
+display: block; border: 2px solid #dbdbdb;
+flex-shrink: 0;
+}
+.avatar-placeholder {
+width: 77px; height: 77px; border-radius: 50%;
+background: #efefef; border: 2px solid #dbdbdb;
+display: flex; align-items: center; justify-content: center;
+color: #aaa; flex-shrink: 0;
+}/* Lado direito: nome em cima, stats embaixo */
+.profile-right {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}.profile-name {
+font-size: 15px;
+font-weight: 600;
+color: #1a1a1a;
+letter-spacing: -0.01em;
+}.stats-row {
+display: flex;
+gap: 0;
+}.stat-item {
+display: flex;
+flex-direction: row;
+align-items: baseline;
+gap: 4px;
+margin-right: 20px;
+}.stat-num {
+font-size: 15px;
+font-weight: 700;
+color: #1a1a1a;
+letter-spacing: -0.02em;
+}.stat-label {
+font-size: 13px;
+color: #1a1a1a;
+font-weight: 400;
+}/* Bio abaixo do bloco avatar+stats */
+.profile-bio {
+font-size: 13px;
+color: #1a1a1a;
+line-height: 1.55;
+margin-bottom: 5px;
+white-space: pre-line;
+}.profile-link {
+display: flex; align-items: center; gap: 4px;
+font-size: 13px; color: #00376b; font-weight: 500;
+text-decoration: none; margin-bottom: 12px;
+}
+.profile-link:hover { text-decoration: underline; }/* ══ HIGHLIGHTS — anel sempre cinza ══ */
+.highlights-section { padding: 4px 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.highlights-section::-webkit-scrollbar { display: none; }
+.highlights-row { display: flex; gap: 16px; padding: 0 16px; width: max-content; }
+.highlight-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; cursor: pointer; }
+.highlight-ring {
+width: 64px; height: 64px; border-radius: 50%;
+padding: 2.5px; background: #dbdbdb;
+display: flex; align-items: center; justify-content: center;
+}
+.highlight-inner { width: 100%; height: 100%; border-radius: 50%; background: #efefef; overflow: hidden; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; color: #aaa; }
+.highlight-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.highlight-label { font-size: 11px; color: #1a1a1a; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.section-divider { height: 1px; background: #dbdbdb; }/* ══ TOOLBAR ══ */
+.toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; position: relative; }
+.btn-refresh { display: flex; align-items: center; gap: 6px; font-family: inherit; font-size: 12px; font-weight: 500; color: #fff; background: #1a1a1a; border: none; border-radius: 7px; padding: 7px 13px; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
+.btn-refresh:hover { background: #333; }
+.btn-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #ddd; border-radius: 7px; cursor: pointer; color: #555; transition: all 0.15s; flex-shrink: 0; }
+.btn-icon:hover { background: #f2f2f0; color: #1a1a1a; border-color: #bbb; }
+.btn-icon.active { background: #f2f2f0; border-color: #bbb; color: #1a1a1a; }/* ══ SETTINGS ══ */
+.settings-dropdown { display: none; position: absolute; top: calc(100% + 2px); right: 14px; width: 265px; background: #fff; border: 1px solid #e0e0de; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 100; animation: dropdown-in 0.15s ease; }
+.settings-dropdown.open { display: block; }
+@keyframes dropdown-in { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+.settings-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; font-size: 13px; color: #1a1a1a; border-bottom: 1px solid #f2f2f0; gap: 10px; }
+.settings-item:last-of-type { border-bottom: none; }
+.settings-item.clickable { cursor: pointer; }
+.settings-item.clickable:hover { background: #fafaf8; }
+.toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-track { position: absolute; inset: 0; background: #ddd; border-radius: 11px; transition: background 0.2s; }
+.toggle input:checked + .toggle-track { background: #ff6b35; }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); pointer-events: none; }
+.toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
+.radio-outer { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.radio-outer.checked { border-color: #ff6b35; }
+.radio-inner { width: 10px; height: 10px; border-radius: 50%; background: #ff6b35; display: none; }
+.radio-outer.checked .radio-inner { display: block; }
+.settings-hint { padding: 10px 14px 12px; font-size: 11px; color: #999; line-height: 1.5; border-top: 1px solid #f2f2f0; }/* ══ REORDER BAR ══ */
+.reorder-bar { display: none; align-items: center; justify-content: space-between; padding: 8px 14px; background: #fafaf8; border-bottom: 1px solid #e4e4e3; font-size: 11px; color: #777; gap: 10px; }
+.reorder-bar.visible { display: flex; }
+.reorder-actions { display: flex; gap: 6px; }
+.btn-sm { font-family: inherit; font-size: 11px; font-weight: 500; border-radius: 5px; padding: 4px 10px; cursor: pointer; border: 1px solid; transition: all 0.12s; }
+.btn-cancel { background: transparent; color: #888; border-color: #ccc; }
+.btn-cancel:hover { background: #f0f0ee; color: #444; }
+.btn-save { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.btn-save:hover { background: #333; }/* ══ GRID 3:4 ══ */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #dbdbdb; }.cell { position: relative; aspect-ratio: 3/4; background: #f2f2f0; overflow: hidden; cursor: pointer; user-select: none; }
+.cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; pointer-events: none; }
+.cell:hover img { transform: scale(1.04); }/* AJUSTE 1: Remover faixa preta do Canva na visualização em grid /
+.cell-canva-wrap {
+background: transparent; / Garante que o fundo do container seja transparente, não preto /
+width: 100%; height: 100%; position: relative;
+overflow: hidden; / Esconde qualquer parte do iframe que exceda este container /
+}
+.cell-canva-iframe {
+/ O Canva adiciona uma barra de ferramentas na parte inferior do iframe embutido. /
+/ Usamos 'clip-path' para "cortar" essa parte inferior, tornando-a invisível. /
+/ O valor '56px' é uma estimativa da altura dessa barra. Se ainda aparecer, este valor pode precisar de pequenos ajustes. /
+clip-path: inset(0 0 56px 0);
+position: absolute;
+top: 0; left: 0;
+border: none;
+pointer-events: none;
+/ tamanho e escala calculados via JS */
+}.cell-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%); padding: 36px 9px 9px; transform: translateY(100%); transition: transform 0.25s ease; pointer-events: none; }
+.cell:hover .cell-overlay { transform: translateY(0); }
+.cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.cell-overlay-title { font-size: 11px; font-weight: 500; color: #fff; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }.cell-pin { position: absolute; top: 7px; right: 7px; pointer-events: none; z-index: 2; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.55)); }
+.cell-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; color: #ccc; font-size: 10px; background: #f7f7f5; }.grid.drag-mode .cell { cursor: grab; }
+.grid.drag-mode .cell:active { cursor: grabbing; }
+.cell.drag-over { outline: 2.5px solid #1a1a1a; outline-offset: -2px; z-index: 1; }
+.cell.dragging { opacity: 0.3; }
+.cell-date-badge { display: none; position: absolute; bottom: 7px; left: 7px; background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9); font-size: 9px; padding: 2px 6px; border-radius: 20px; pointer-events: none; }
+.grid.drag-mode .cell-date-badge { display: block; }
+.cell-handle { display: none; position: absolute; top: 6px; left: 6px; background: rgba(255,255,255,0.9); border-radius: 3px; width: 20px; height: 20px; align-items: center; justify-content: center; font-size: 10px; color: #555; pointer-events: none; z-index: 2; }
+.grid.drag-mode .cell-handle { display: flex; }/* ══ ERROR ══ */
+.error-state { padding: 24px 20px; font-size: 12px; color: #c0392b; line-height: 1.55; }
+.error-state strong { display: block; margin-bottom: 6px; font-size: 13px; }/* ══ FOOTER ══ */
+.footer { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-top: 1px solid #e4e4e3; }
+.reorder-btn { font-family: inherit; font-size: 11px; color: #888; background: transparent; border: 1px solid #ddd; border-radius: 5px; padding: 4px 10px; cursor: pointer; transition: all 0.15s; }
+.reorder-btn:hover { background: #f2f2f0; color: #444; border-color: #bbb; }
+.brand { font-size: 10px; color: #bbb; }
+.brand a { color: #999; text-decoration: none; font-weight: 500; }
+.brand a:hover { color: #555; }/* ══ MODAL ══ */
+.modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+.modal-backdrop.open { display: flex; }@keyframes modal-in { from { transform: scale(0.95) translateY(8px); opacity: 0; } to { transform: scale(1); opacity: 1; } }/* Área de mídia: proporção 3:4 exata, sem arredondamento /
+.modal-media {
+width: 100%;
+aspect-ratio: 3 / 4;   / altura = 4/3 × largura — exibe a imagem inteira */
+flex-shrink: 0;
+overflow: hidden;
+background: #111;
+position: relative;
+border-radius: 0;
+}/* Imagem: cover dentro de container 3:4 = sem barras, sem corte para imgs 3:4 */
+.modal-img {
+width: 100%; height: 100%;
+display: block;
+object-fit: cover;
+}/* AJUSTE 2: Modal do Canva em proporção 3:4 sem barras extras /
+.modal-canva-wrap {
+width: 100%; height: 100%;
+overflow: hidden; / Esconde qualquer parte do iframe que exceda este container /
+position: relative; / Essencial para posicionar o iframe com 'top' /
+background: #000; / Fundo preto para preencher se o iframe não cobrir tudo /
+}
+.modal-canva-frame {
+width: 100%;
+/ O Canva pode adicionar uma barra superior no iframe do modal (a "faixa preta em cima"). /
+/ Para esconder essa barra e garantir que o conteúdo preencha a proporção 3:4, /
+/ aumentamos a altura do iframe e o movemos para cima. /
+/ O valor '40px' é uma estimativa. Se a barra ainda aparecer, ajuste este número. /
+height: calc(100% + 40px); / Aumenta a altura para "empurrar" a barra superior para fora da visualização /
+top: -40px; / Move o iframe para cima para esconder a barra superior /
+position: absolute; / Necessário para 'top' funcionar */
+border: none;
+display: block;
+}/* Carrossel */
+.carousel { position: relative; width: 100%; height: 100%; overflow: hidden; background: #111; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.32s ease; }
+.carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #111; }
+.carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }.carousel-arrow {
+position: absolute; top: 50%; transform: translateY(-50%);
+width: 32px; height: 32px; border-radius: 50%;
+background: rgba(255,255,255,0.88); border: none;
+cursor: pointer; display: flex; align-items: center; justify-content: center;
+font-size: 16px; color: #1a1a1a;
+box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 3; transition: background 0.15s;
+}
+.carousel-arrow:hover { background: #fff; }
+.carousel-arrow:disabled { opacity: 0.25; pointer-events: none; }
+.carousel-arrow.prev { left: 9px; }
+.carousel-arrow.next { right: 9px; }
+.carousel-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
+.carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background 0.15s; }
+.carousel-dot.active { background: #fff; }.modal-no-img { width: 100%; height: 100%; background: #f2f2f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }/* Corpo do modal: scroll somente aqui */
+.modal-body { padding: 14px 16px 18px; overflow-y: auto; }.modal-caption {
+font-size: 13px; color: #333; line-height: 1.7;
+margin-bottom: 10px;
+white-space: pre-line;
+word-break: break-word;
+}
+.modal-meta { font-size: 11px; color: #aaa; border-top: 1px solid #f0f0ee; padding-top: 9px; }.modal-close {
+position: absolute; top: 10px; right: 10px;
+width: 28px; height: 28px; border-radius: 50%;
+background: rgba(0,0,0,0.45); border: none; color: #fff;
+font-size: 14px; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+z-index: 10; transition: background 0.15s;
+}
+.modal-close:hover { background: rgba(0,0,0,0.7); }/* Selo Canva */
+.canva-badge {
+position: absolute; top: 10px; left: 10px;
+background: rgba(255,255,255,0.92); border-radius: 20px;
+padding: 3px 9px; font-size: 10px; font-weight: 600; color: #7c3aed;
+z-index: 10; display: flex; align-items: center; gap: 4px;
+}/* ══ TOAST ══ */
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 20px; white-space: nowrap; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 2000; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }@keyframes spin-icon { to { transform: rotate(360deg); } }
 
-  .profile-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1a1a1a;
-    letter-spacing: -0.01em;
-  }
 
-  .stats-row {
-    display: flex;
-    gap: 0;
-  }
-
-  .stat-item {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 4px;
-    margin-right: 20px;
-  }
-
-  .stat-num {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1a1a;
-    letter-spacing: -0.02em;
-  }
-
-  .stat-label {
-    font-size: 13px;
-    color: #1a1a1a;
-    font-weight: 400;
-  }
-
-  /* Bio abaixo do bloco avatar+stats */
-  .profile-bio {
-    font-size: 13px;
-    color: #1a1a1a;
-    line-height: 1.55;
-    margin-bottom: 5px;
-    white-space: pre-line;
-  }
-
-  .profile-link {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 13px; color: #00376b; font-weight: 500;
-    text-decoration: none; margin-bottom: 12px;
-  }
-  .profile-link:hover { text-decoration: underline; }
-
-  /* ══ HIGHLIGHTS — anel sempre cinza ══ */
-  .highlights-section { padding: 4px 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .highlights-section::-webkit-scrollbar { display: none; }
-  .highlights-row { display: flex; gap: 16px; padding: 0 16px; width: max-content; }
-  .highlight-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; cursor: pointer; }
-  .highlight-ring {
-    width: 64px; height: 64px; border-radius: 50%;
-    padding: 2.5px; background: #dbdbdb;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .highlight-inner { width: 100%; height: 100%; border-radius: 50%; background: #efefef; overflow: hidden; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; color: #aaa; }
-  .highlight-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .highlight-label { font-size: 11px; color: #1a1a1a; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .section-divider { height: 1px; background: #dbdbdb; }
-
-  /* ══ TOOLBAR ══ */
-  .toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; position: relative; }
-  .btn-refresh { display: flex; align-items: center; gap: 6px; font-family: inherit; font-size: 12px; font-weight: 500; color: #fff; background: #1a1a1a; border: none; border-radius: 7px; padding: 7px 13px; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
-  .btn-refresh:hover { background: #333; }
-  .btn-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #ddd; border-radius: 7px; cursor: pointer; color: #555; transition: all 0.15s; flex-shrink: 0; }
-  .btn-icon:hover { background: #f2f2f0; color: #1a1a1a; border-color: #bbb; }
-  .btn-icon.active { background: #f2f2f0; border-color: #bbb; color: #1a1a1a; }
-
-  /* ══ SETTINGS ══ */
-  .settings-dropdown { display: none; position: absolute; top: calc(100% + 2px); right: 14px; width: 265px; background: #fff; border: 1px solid #e0e0de; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 100; animation: dropdown-in 0.15s ease; }
-  .settings-dropdown.open { display: block; }
-  @keyframes dropdown-in { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
-  .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; font-size: 13px; color: #1a1a1a; border-bottom: 1px solid #f2f2f0; gap: 10px; }
-  .settings-item:last-of-type { border-bottom: none; }
-  .settings-item.clickable { cursor: pointer; }
-  .settings-item.clickable:hover { background: #fafaf8; }
-  .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-track { position: absolute; inset: 0; background: #ddd; border-radius: 11px; transition: background 0.2s; }
-  .toggle input:checked + .toggle-track { background: #ff6b35; }
-  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); pointer-events: none; }
-  .toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
-  .radio-outer { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .radio-outer.checked { border-color: #ff6b35; }
-  .radio-inner { width: 10px; height: 10px; border-radius: 50%; background: #ff6b35; display: none; }
-  .radio-outer.checked .radio-inner { display: block; }
-  .settings-hint { padding: 10px 14px 12px; font-size: 11px; color: #999; line-height: 1.5; border-top: 1px solid #f2f2f0; }
-
-  /* ══ REORDER BAR ══ */
-  .reorder-bar { display: none; align-items: center; justify-content: space-between; padding: 8px 14px; background: #fafaf8; border-bottom: 1px solid #e4e4e3; font-size: 11px; color: #777; gap: 10px; }
-  .reorder-bar.visible { display: flex; }
-  .reorder-actions { display: flex; gap: 6px; }
-  .btn-sm { font-family: inherit; font-size: 11px; font-weight: 500; border-radius: 5px; padding: 4px 10px; cursor: pointer; border: 1px solid; transition: all 0.12s; }
-  .btn-cancel { background: transparent; color: #888; border-color: #ccc; }
-  .btn-cancel:hover { background: #f0f0ee; color: #444; }
-  .btn-save { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-  .btn-save:hover { background: #333; }
-
-  /* ══ GRID 3:4 ══ */
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #dbdbdb; }
-
-  .cell { position: relative; aspect-ratio: 3/4; background: #f2f2f0; overflow: hidden; cursor: pointer; user-select: none; }
-  .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; pointer-events: none; }
-  .cell:hover img { transform: scale(1.04); }
-
-  /* Canva: iframe miniatura — pointer-events:none = sem hover = sem toolbar */
-  .cell-canva-wrap {
-    width: 100%; height: 100%; position: relative;
-    overflow: hidden; background: #000;
-  }
-  .cell-canva-iframe {
-    position: absolute;
-    top: 0; left: 0;
-    border: none;
-    pointer-events: none;
-    /* tamanho e escala calculados via JS */
-  }
-
-  .cell-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%); padding: 36px 9px 9px; transform: translateY(100%); transition: transform 0.25s ease; pointer-events: none; }
-  .cell:hover .cell-overlay { transform: translateY(0); }
-  .cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
-  .cell-overlay-title { font-size: 11px; font-weight: 500; color: #fff; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-  .cell-pin { position: absolute; top: 7px; right: 7px; pointer-events: none; z-index: 2; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.55)); }
-  .cell-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; color: #ccc; font-size: 10px; background: #f7f7f5; }
-
-  .grid.drag-mode .cell { cursor: grab; }
-  .grid.drag-mode .cell:active { cursor: grabbing; }
-  .cell.drag-over { outline: 2.5px solid #1a1a1a; outline-offset: -2px; z-index: 1; }
-  .cell.dragging { opacity: 0.3; }
-  .cell-date-badge { display: none; position: absolute; bottom: 7px; left: 7px; background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9); font-size: 9px; padding: 2px 6px; border-radius: 20px; pointer-events: none; }
-  .grid.drag-mode .cell-date-badge { display: block; }
-  .cell-handle { display: none; position: absolute; top: 6px; left: 6px; background: rgba(255,255,255,0.9); border-radius: 3px; width: 20px; height: 20px; align-items: center; justify-content: center; font-size: 10px; color: #555; pointer-events: none; z-index: 2; }
-  .grid.drag-mode .cell-handle { display: flex; }
-
-  /* ══ ERROR ══ */
-  .error-state { padding: 24px 20px; font-size: 12px; color: #c0392b; line-height: 1.55; }
-  .error-state strong { display: block; margin-bottom: 6px; font-size: 13px; }
-
-  /* ══ FOOTER ══ */
-  .footer { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-top: 1px solid #e4e4e3; }
-  .reorder-btn { font-family: inherit; font-size: 11px; color: #888; background: transparent; border: 1px solid #ddd; border-radius: 5px; padding: 4px 10px; cursor: pointer; transition: all 0.15s; }
-  .reorder-btn:hover { background: #f2f2f0; color: #444; border-color: #bbb; }
-  .brand { font-size: 10px; color: #bbb; }
-  .brand a { color: #999; text-decoration: none; font-weight: 500; }
-  .brand a:hover { color: #555; }
-
-  /* ══ MODAL ══
-     Topo reto (bordas 0), base arredondada (14px)
-     Mídia exatamente 3:4 — imagem inteira visível */
-  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-  .modal-backdrop.open { display: flex; }
-
-  .modal {
-    background: #fff;
-    border-radius: 0 0 14px 14px;
-    max-width: 380px; width: 100%;
-    max-height: 94vh;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    animation: modal-in 0.2s ease;
-    position: relative;
-  }
-  @keyframes modal-in { from { transform: scale(0.95) translateY(8px); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-  /* Área de mídia: proporção 3:4 exata, sem arredondamento */
-  .modal-media {
-    width: 100%;
-    aspect-ratio: 3 / 4;   /* altura = 4/3 × largura — exibe a imagem inteira */
-    flex-shrink: 0;
-    overflow: hidden;
-    background: #111;
-    position: relative;
-    border-radius: 0;
-  }
-
-  /* Imagem: cover dentro de container 3:4 = sem barras, sem corte para imgs 3:4 */
-  .modal-img {
-    width: 100%; height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  /* Canva embed no modal — ocupa 3:4 inteiro, toolbar escondida via translate */
-  .modal-canva-wrap {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    position: relative;
-  }
-  .modal-canva-frame {
-    width: 100%;
-    /* Aumenta a altura para empurrar a toolbar do Canva pra fora do clip */
-    height: calc(100% + 56px);
-    border: none;
-    display: block;
-  }
-
-  /* Carrossel */
-  .carousel { position: relative; width: 100%; height: 100%; overflow: hidden; background: #111; }
-  .carousel-track { display: flex; height: 100%; transition: transform 0.32s ease; }
-  .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #111; }
-  .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  .carousel-arrow {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,0.88); border: none;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 16px; color: #1a1a1a;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 3; transition: background 0.15s;
-  }
-  .carousel-arrow:hover { background: #fff; }
-  .carousel-arrow:disabled { opacity: 0.25; pointer-events: none; }
-  .carousel-arrow.prev { left: 9px; }
-  .carousel-arrow.next { right: 9px; }
-  .carousel-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
-  .carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background 0.15s; }
-  .carousel-dot.active { background: #fff; }
-
-  .modal-no-img { width: 100%; height: 100%; background: #f2f2f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
-
-  /* Corpo do modal: scroll somente aqui */
-  .modal-body { padding: 14px 16px 18px; overflow-y: auto; }
-
-  .modal-caption {
-    font-size: 13px; color: #333; line-height: 1.7;
-    margin-bottom: 10px;
-    white-space: pre-line;
-    word-break: break-word;
-  }
-  .modal-meta { font-size: 11px; color: #aaa; border-top: 1px solid #f0f0ee; padding-top: 9px; }
-
-  .modal-close {
-    position: absolute; top: 10px; right: 10px;
-    width: 28px; height: 28px; border-radius: 50%;
-    background: rgba(0,0,0,0.45); border: none; color: #fff;
-    font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 10; transition: background 0.15s;
-  }
-  .modal-close:hover { background: rgba(0,0,0,0.7); }
-
-  /* Selo Canva */
-  .canva-badge {
-    position: absolute; top: 10px; left: 10px;
-    background: rgba(255,255,255,0.92); border-radius: 20px;
-    padding: 3px 9px; font-size: 10px; font-weight: 600; color: #7c3aed;
-    z-index: 10; display: flex; align-items: center; gap: 4px;
-  }
-
-  /* ══ TOAST ══ */
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 20px; white-space: nowrap; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 2000; pointer-events: none; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  @keyframes spin-icon { to { transform: rotate(360deg); } }
-</style>
-</head>
-<body>
-<div class="widget" id="widget">
-
-  <!-- PROFILE — layout Instagram fiel -->
-  <div class="profile-section" id="profileSection">
-    <div class="profile-top">
-      <!-- Avatar -->
-      <img class="avatar" id="profileAvatar" src="" alt="Foto de perfil" style="display:none">
-      <div class="avatar-placeholder" id="avatarPlaceholder">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-        </svg>
-      </div>
-      <!-- Nome + stats à direita do avatar -->
-      <div class="profile-right">
-        <div class="profile-name" id="profileName"></div>
-        <div class="stats-row">
-          <div class="stat-item">
-            <span class="stat-num" id="statPosts">—</span>
-            <span class="stat-label">posts</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num" id="statSeguidores">—</span>
-            <span class="stat-label">seguidores</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num" id="statSeguindo">—</span>
-            <span class="stat-label">seguindo</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Bio e link abaixo, largura total -->
-    <div class="profile-bio" id="profileBio"></div>
-    <a href="#" class="profile-link" id="profileLink" style="display:none">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00376b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-      </svg>
-      <span id="profileLinkText"></span>
-    </a>
-  </div>
-
-  <!-- HIGHLIGHTS -->
-  <div class="highlights-section" id="highlightsSection" style="display:none">
-    <div class="highlights-row" id="highlightsRow"></div>
-  </div>
-
-  <div class="section-divider"></div>
-
-  <!-- TOOLBAR -->
-  <div class="toolbar">
-    <button class="btn-refresh" onclick="loadData()">
-      <svg id="refreshIcon" width="13" height="13" viewBox="0 0 16 16" fill="white">
-        <path d="M13.6 2.4A7 7 0 1 0 15 8h-1.5A5.5 5.5 0 1 1 10.8 3.7L9 5.5H14V.5L13.6 2.4z"/>
-      </svg>
+    
+    
+      
+      [Image blocked: Foto de perfil]
+      
+        
+          
+        
+      
+      
+      
+        
+        
+          
+            —
+            posts
+          
+          
+            —
+            seguidores
+          
+          
+            —
+            seguindo
+          
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+      
+     [blocked]
+      
+    
+        
+    
+      
+        
+      
       Atualizar
-    </button>
-    <button class="btn-icon" id="btnSettings" onclick="toggleSettings()">
-      <svg width="14" height="4" viewBox="0 0 14 4" fill="currentColor">
-        <circle cx="1.5" cy="2" r="1.5"/><circle cx="7" cy="2" r="1.5"/><circle cx="12.5" cy="2" r="1.5"/>
-      </svg>
-    </button>
-    <div class="settings-dropdown" id="settingsDropdown">
-      <div class="settings-item">
-        <span>Mostrar Bio</span>
-        <label class="toggle"><input type="checkbox" id="toggleBio" checked onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
-      </div>
-      <div class="settings-item">
-        <span>Mostrar Highlights</span>
-        <label class="toggle"><input type="checkbox" id="toggleHighlights" checked onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
-      </div>
-      <div class="settings-item">
-        <span>Mostrar Mapa de Conteúdo</span>
-        <label class="toggle"><input type="checkbox" id="toggleContentMap" onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
-      </div>
-      <div class="settings-item clickable" onclick="setSortMode('date')">
-        <span>Ordenar por data de publicação</span>
-        <div class="radio-outer checked" id="radioDate"><div class="radio-inner"></div></div>
-      </div>
-      <div class="settings-item clickable" onclick="setSortMode('custom')" style="border-bottom:none">
-        <span>Ordem personalizada</span>
-        <div class="radio-outer" id="radioCustom"><div class="radio-inner"></div></div>
-      </div>
-      <div class="settings-hint">Para editar a ordem manualmente, use o botão "Editar ordem" abaixo do grid.</div>
-    </div>
-  </div>
+    
+    
+      
+        
+      
+    
+    
+      
+        Mostrar Bio
+        
+      
+      
+        Mostrar Highlights
+        
+      
+      
+        Mostrar Mapa de Conteúdo
+        
+      
+      
+        Ordenar por data de publicação
+        
+      
+      
+        Ordem personalizada
+        
+      
+      Para editar a ordem manualmente, use o botão "Editar ordem" abaixo do grid.
+    
+      
+    Arraste os posts para reordenar.
+    
+      Cancelar
+      Reagendar ✓
+    
+      
+    
+      Carregando…
+    
+    
+    ⇅ Editar ordem
+    feito com pontoa [blocked]
+  
 
-  <!-- REORDER BAR -->
-  <div class="reorder-bar" id="reorderBar">
-    <span>Arraste os posts para reordenar.</span>
-    <div class="reorder-actions">
-      <button class="btn-sm btn-cancel" onclick="cancelReorder()">Cancelar</button>
-      <button class="btn-sm btn-save"   onclick="saveReorder()">Reagendar ✓</button>
-    </div>
-  </div>
-
-  <!-- GRID -->
-  <div class="grid" id="grid">
-    <div class="initial-loading" style="grid-column:1/-1">
-      <div class="spinner"></div><span>Carregando…</span>
-    </div>
-  </div>
-
-  <div class="footer">
-    <button class="reorder-btn" id="reorderBtn" onclick="toggleReorder()">⇅ Editar ordem</button>
-    <div class="brand">feito com <a href="#">pontoa</a></div>
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
-  <div class="modal" id="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-media" id="modalMedia"></div>
-    <div class="modal-body">
-      <div class="modal-caption" id="modalCaption"></div>
-      <div class="modal-meta"    id="modalMeta"></div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-const CAPTION_LIMIT = 2200;
-
-/* ── PUSHPIN SVG ── */
-function makePinSvg() {
-  const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  s.setAttribute('class','cell-pin'); s.setAttribute('width','15'); s.setAttribute('height','15');
-  s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none');
-  s.innerHTML = `
-    <path d="M9 3h6v2l1 1v5l-3 2v2H11v-2L8 11V6l1-1V3z"
-          fill="white" stroke="rgba(0,0,0,0.22)" stroke-width="0.8" stroke-linejoin="round"/>
-    <line x1="12" y1="13" x2="12" y2="21" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-    <line x1="9" y1="6" x2="15" y2="6" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>`;
-  return s;
-}
-
-/* ── CANVA ── */
-function toCanvaEmbed(url) {
-  return url.split('?')[0] + '?embed';
-}
-
-/* Escala o iframe do Canva para preencher a célula do grid
-   sem mostrar a toolbar (que fica no fundo do iframe) */
-function scaleCanvaCell(wrap, iframe) {
-  // A célula tem aspect-ratio 3:4 — pega a largura real
-  const cellW = wrap.offsetWidth  || 140;
-  const cellH = wrap.offsetHeight || Math.round(cellW * 4 / 3);
-
-  // O Canva embed renderiza internamente num viewport de ~800×1067 (3:4)
-  const srcW = 800;
-  const srcH = 1067;
-
-  // Escala para cobrir toda a célula
-  const scale = Math.max(cellW / srcW, cellH / srcH);
-
-  iframe.style.width  = srcW + 'px';
-  iframe.style.height = srcH + 'px';
-  iframe.style.transform       = `scale(${scale})`;
-  iframe.style.transformOrigin = 'top left';
-}
-
-/* ── STATE ── */
-let displayPosts  = [];
-let originalPosts = [];
-let dragMode      = false;
-let dragSrcIdx    = null;
-let settingsOpen  = false;
-let sortMode      = 'date';
-
-/* ── HELPERS ── */
-function fmtShort(d) { if (!d) return ''; return new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'short'}); }
-function fmtFull(d)  { if (!d) return '—'; return new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}); }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtNum(n) {
-  if (n == null) return '—';
-  if (n >= 1000000) return (n/1000000).toFixed(1).replace('.',',') + 'M';
-  if (n >= 1000)    return (n/1000).toFixed(n%1000===0?0:1).replace('.',',') + 'k';
-  return String(n);
-}
-
-/* ── LOAD ── */
-async function loadData() {
-  const icon = document.getElementById('refreshIcon');
-  icon.style.animation = 'spin-icon 0.7s linear infinite';
-  document.getElementById('grid').innerHTML = `
-    <div class="initial-loading" style="grid-column:1/-1">
-      <div class="spinner"></div><span>Carregando…</span>
-    </div>`;
-  try {
-    const res = await fetch('/.netlify/functions/get-posts');
-    if (!res.ok) throw new Error(`Erro ${res.status}: ${await res.text()}`);
-    const data = await res.json();
-    renderProfile(data.perfil);
-    renderHighlights(data.destaques || []);
-    initDisplayPosts(data.posts || []);
-    renderGrid();
-  } catch (e) {
-    document.getElementById('grid').innerHTML = `
-      <div class="error-state" style="grid-column:1/-1">
-        <strong>Não foi possível carregar.</strong>
-        Verifique as variáveis de ambiente no Netlify e se a integração está conectada à base de dados.<br><br>
-        <em>${esc(e.message)}</em>
-      </div>`;
-  } finally {
-    icon.style.animation = '';
-  }
-}
-
-/* ── PROFILE ── */
-function renderProfile(p) {
-  if (!p) return;
-  if (p.imageUrl) {
-    const av = document.getElementById('profileAvatar');
-    av.src = p.imageUrl; av.style.display = 'block';
-    document.getElementById('avatarPlaceholder').style.display = 'none';
-  }
-  document.getElementById('profileName').textContent    = p.nome || '';
-  document.getElementById('profileBio').textContent     = p.bio  || '';
-  document.getElementById('statSeguidores').textContent = fmtNum(p.seguidores);
-  document.getElementById('statSeguindo').textContent   = fmtNum(p.seguindo);
-  if (p.link) {
-    const linkEl = document.getElementById('profileLink');
-    linkEl.href  = p.link.startsWith('http') ? p.link : 'https://' + p.link;
-    linkEl.style.display = 'flex';
-    document.getElementById('profileLinkText').textContent = p.link.replace(/^https?:\/\//, '');
-  }
-}
-
-/* ── HIGHLIGHTS ── */
-function renderHighlights(destaques) {
-  const section = document.getElementById('highlightsSection');
-  const row     = document.getElementById('highlightsRow');
-  row.innerHTML = '';
-  if (!destaques.length) { section.style.display = 'none'; return; }
-  section.style.display = '';
-  destaques.forEach(h => {
-    const item  = document.createElement('div'); item.className = 'highlight-item';
-    const ring  = document.createElement('div'); ring.className = 'highlight-ring';
-    const inner = document.createElement('div'); inner.className = 'highlight-inner';
-    if (h.imageUrl) {
-      const img = document.createElement('img'); img.src = h.imageUrl; img.alt = h.nome; img.loading = 'lazy';
-      inner.appendChild(img);
-    } else {
-      inner.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`;
-    }
-    ring.appendChild(inner);
-    const label = document.createElement('span'); label.className = 'highlight-label'; label.textContent = h.nome;
-    item.appendChild(ring); item.appendChild(label);
-    row.appendChild(item);
-  });
-}
-
-/* ── POSTS ── */
-function initDisplayPosts(posts) {
-  const src = posts.map(p => ({...p}));
-  displayPosts = sortMode === 'date'
-    ? src.sort((a,b) => (b.date||'').localeCompare(a.date||''))
-    : src;
-}
-
-function renderGrid() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-  grid.classList.toggle('drag-mode', dragMode);
-  document.getElementById('statPosts').textContent = displayPosts.length || '—';
-
-  if (!displayPosts.length) {
-    grid.innerHTML = `<div class="initial-loading" style="grid-column:1/-1"><span>Nenhum post encontrado.</span></div>`;
-    return;
-  }
-
-  displayPosts.forEach((post, idx) => {
-    const cell = document.createElement('div');
-    cell.className = 'cell'; cell.dataset.idx = String(idx);
-
-    if (post.canvaUrl) {
-      // Canva: iframe miniatura sem toolbar (pointer-events:none + escala calculada)
-      const wrap = document.createElement('div');
-      wrap.className = 'cell-canva-wrap';
-
-      const iframe = document.createElement('iframe');
-      iframe.className = 'cell-canva-iframe';
-      iframe.src = toCanvaEmbed(post.canvaUrl);
-      iframe.setAttribute('scrolling', 'no');
-      // pointer-events:none já no CSS — sem hover = toolbar não aparece
-      wrap.appendChild(iframe);
-
-      // Escala após render da célula
-      requestAnimationFrame(() => scaleCanvaCell(wrap, iframe));
-      iframe.addEventListener('load', () => scaleCanvaCell(wrap, iframe));
-
-      cell.appendChild(wrap);
-
-    } else if (post.imageUrl) {
-      const img = document.createElement('img');
-      img.src = post.imageUrl; img.alt = post.title; img.loading = 'lazy';
-      img.draggable = false;
-      img.onerror = () => { img.style.display='none'; showPlaceholder(cell); };
-      cell.appendChild(img);
-    } else {
-      showPlaceholder(cell);
-    }
-
-    if (post.pinned) cell.appendChild(makePinSvg());
-
-    const ov = document.createElement('div'); ov.className = 'cell-overlay';
-    ov.innerHTML = `<div class="cell-overlay-date">${esc(fmtShort(post.date))}</div>
-      <div class="cell-overlay-title">${esc(post.title)}</div>`;
-    cell.appendChild(ov);
-
-    const handle = document.createElement('div'); handle.className = 'cell-handle'; handle.textContent = '⠿'; cell.appendChild(handle);
-    const badge  = document.createElement('div'); badge.className = 'cell-date-badge'; badge.textContent = fmtShort(post.date); cell.appendChild(badge);
-
-    cell.addEventListener('click', () => { if (!dragMode) openModal(idx); });
-    cell.draggable = true;
-    cell.addEventListener('dragstart', onDragStart);
-    cell.addEventListener('dragover',  onDragOver);
-    cell.addEventListener('drop',      onDrop);
-    cell.addEventListener('dragend',   onDragEnd);
-    grid.appendChild(cell);
-  });
-}
-
-function showPlaceholder(cell) {
-  const ph = document.createElement('div'); ph.className = 'cell-placeholder';
-  ph.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
-  cell.appendChild(ph);
-}
-
-/* ── MODAL ── */
-function openModal(idx) {
-  const post  = displayPosts[idx]; if (!post) return;
-  const media = document.getElementById('modalMedia');
-  media.innerHTML = '';
-
-  if (post.canvaUrl) {
-    const badge = document.createElement('div');
-    badge.className = 'canva-badge';
-    badge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#7c3aed"/></svg> Canva`;
-    media.appendChild(badge);
-
-    const wrap = document.createElement('div');
-    wrap.className = 'modal-canva-wrap';
-    const iframe = document.createElement('iframe');
-    iframe.className = 'modal-canva-frame';
-    iframe.src = toCanvaEmbed(post.canvaUrl);
-    iframe.allowFullscreen = true;
-    iframe.setAttribute('loading', 'lazy');
-    wrap.appendChild(iframe);
-    media.appendChild(wrap);
-
-  } else if (post.images && post.images.length > 1) {
-    buildCarousel(media, post.images);
-  } else if (post.imageUrl) {
-    const img = document.createElement('img');
-    img.className = 'modal-img';
-    img.src = post.imageUrl; img.alt = post.title;
-    media.appendChild(img);
-  } else {
-    media.innerHTML = `<div class="modal-no-img">Sem imagem</div>`;
-  }
-
-  const captionEl = document.getElementById('modalCaption');
-  if (post.legenda) {
-    const text = post.legenda.length > CAPTION_LIMIT
-      ? post.legenda.slice(0, CAPTION_LIMIT) + '…'
-      : post.legenda;
-    captionEl.textContent = text;
-    captionEl.style.display = '';
-  } else {
-    captionEl.style.display = 'none';
-  }
-
-  document.getElementById('modalMeta').textContent = `📅 ${fmtFull(post.date)}`;
-  document.getElementById('modalBackdrop').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-/* ── CARROSSEL ── */
-function buildCarousel(container, images) {
-  let current = 0;
-  const carousel = document.createElement('div'); carousel.className = 'carousel';
-  const track    = document.createElement('div'); track.className = 'carousel-track';
-
-  images.forEach(url => {
-    const slide = document.createElement('div'); slide.className = 'carousel-slide';
-    const img   = document.createElement('img'); img.src = url; img.loading = 'lazy';
-    slide.appendChild(img); track.appendChild(slide);
-  });
-  carousel.appendChild(track);
-
-  const prev = document.createElement('button'); prev.className = 'carousel-arrow prev'; prev.textContent = '‹'; prev.disabled = true;
-  const next = document.createElement('button'); next.className = 'carousel-arrow next'; next.textContent = '›';
-  const dotsEl = document.createElement('div'); dotsEl.className = 'carousel-dots';
-
-  const dots = images.map((_, i) => {
-    const d = document.createElement('div'); d.className = 'carousel-dot' + (i===0?' active':'');
-    d.addEventListener('click', () => goTo(i));
-    dotsEl.appendChild(d); return d;
-  });
-
-  function goTo(n) {
-    current = n;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((d,i) => d.classList.toggle('active', i===current));
-    prev.disabled = current === 0;
-    next.disabled = current === images.length - 1;
-  }
-
-  prev.addEventListener('click', () => goTo(current - 1));
-  next.addEventListener('click', () => goTo(current + 1));
-  carousel.appendChild(prev); carousel.appendChild(next); carousel.appendChild(dotsEl);
-  container.appendChild(carousel);
-}
-
-function handleBackdropClick(e) { if (e.target===document.getElementById('modalBackdrop')) closeModal(); }
-function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); document.body.style.overflow=''; }
-
-/* ── SETTINGS ── */
-function toggleSettings() {
-  settingsOpen = !settingsOpen;
-  document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
-  document.getElementById('btnSettings').classList.toggle('active', settingsOpen);
-}
-function applySettings() {
-  const showBio = document.getElementById('toggleBio').checked;
-  const showHL  = document.getElementById('toggleHighlights').checked;
-  ['profileName','profileBio','profileLink'].forEach(id => document.getElementById(id).style.display = showBio ? '' : 'none');
-  document.getElementById('highlightsSection').style.display = showHL ? '' : 'none';
-}
-function setSortMode(mode) {
-  if (dragMode) return;
-  sortMode = mode;
-  document.getElementById('radioDate').classList.toggle('checked',   mode==='date');
-  document.getElementById('radioCustom').classList.toggle('checked', mode==='custom');
-  initDisplayPosts(displayPosts);
-  renderGrid();
-}
-document.addEventListener('click', e => {
-  if (!settingsOpen) return;
-  if (!document.getElementById('settingsDropdown').contains(e.target) && !document.getElementById('btnSettings').contains(e.target)) {
-    settingsOpen = false;
-    document.getElementById('settingsDropdown').classList.remove('open');
-    document.getElementById('btnSettings').classList.remove('active');
-  }
-});
-
-/* ── DRAG & DROP ── */
-function toggleReorder() {
-  if (dragMode) { cancelReorder(); return; }
-  dragMode = true;
-  originalPosts = displayPosts.map(p=>({...p}));
-  document.getElementById('reorderBar').classList.add('visible');
-  document.getElementById('reorderBtn').textContent = '✕ Cancelar edição';
-  renderGrid();
-}
-function cancelReorder() {
-  dragMode = false; displayPosts = originalPosts.map(p=>({...p}));
-  document.getElementById('reorderBar').classList.remove('visible');
-  document.getElementById('reorderBtn').textContent = '⇅ Editar ordem';
-  renderGrid();
-}
-function onDragStart(e) {
-  if (!dragMode) { e.preventDefault(); return; }
-  dragSrcIdx = parseInt(e.currentTarget.dataset.idx);
-  e.currentTarget.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', dragSrcIdx);
-}
-function onDragOver(e) {
-  if (!dragMode) return;
-  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-  document.querySelectorAll('.cell').forEach(c=>c.classList.remove('drag-over'));
-  e.currentTarget.classList.add('drag-over');
-}
-function onDrop(e) {
-  e.preventDefault(); if (!dragMode||dragSrcIdx===null) return;
-  const dest = parseInt(e.currentTarget.dataset.idx); if (dragSrcIdx===dest) return;
-  const moved = displayPosts.splice(dragSrcIdx,1)[0]; displayPosts.splice(dest,0,moved);
-  dragSrcIdx = null; renderGrid();
-}
-function onDragEnd(e) {
-  dragSrcIdx = null;
-  document.querySelectorAll('.cell').forEach(c=>{ c.classList.remove('dragging'); c.classList.remove('drag-over'); });
-}
-async function saveReorder() {
-  const btn = document.querySelector('.btn-save');
-  btn.textContent = 'Salvando…'; btn.disabled = true;
-  const sortedDates = [...originalPosts].map(p=>p.date).sort((a,b)=>{ if(!a&&!b)return 0; if(!a)return 1; if(!b)return -1; return b.localeCompare(a); });
-  const updates = displayPosts.map((p,i)=>({ id:p.id, date:sortedDates[i]||null }));
-  try {
-    const res = await fetch('/.netlify/functions/update-posts', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(updates) });
-    if (!res.ok) throw new Error(await res.text());
-    displayPosts = displayPosts.map((p,i)=>({...p, date:sortedDates[i]||null}));
-    dragMode = false;
-    document.getElementById('reorderBar').classList.remove('visible');
-    document.getElementById('reorderBtn').textContent = '⇅ Editar ordem';
-    renderGrid();
-    showToast('✓ Datas atualizadas no Notion!');
-  } catch(e) {
-    alert('Erro ao salvar: '+e.message);
-    btn.textContent = 'Reagendar ✓'; btn.disabled = false;
-  }
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2400);
-}
-
-loadData();
-</script>
-</body>
-</html>
+  
+    ✕
