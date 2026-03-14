@@ -465,7 +465,12 @@ function makePinSvg() {
 }
 
 /* ── CANVA ── */
-function toCanvaEmbed(url) {
+// No grid: #1 trava na primeira página e esconde a barra de navegação
+function toCanvaEmbedCell(url) {
+  return url.split('?')[0] + '?embed#1';
+}
+// No modal: sem #1 → mostra todas as páginas com navegação nativa
+function toCanvaEmbedModal(url) {
   return url.split('?')[0] + '?embed';
 }
 
@@ -604,7 +609,7 @@ function renderGrid() {
 
       const iframe = document.createElement('iframe');
       iframe.className = 'cell-canva-iframe';
-      iframe.src = toCanvaEmbed(post.canvaUrl);
+      iframe.src = toCanvaEmbedCell(post.canvaUrl);
       iframe.setAttribute('scrolling', 'no');
       /* pointer-events:none no CSS — toolbar nunca aparece sem hover */
       wrap.appendChild(iframe);
@@ -672,7 +677,7 @@ function openModal(idx) {
     clip.className = 'modal-canva-clip';
     const iframe = document.createElement('iframe');
     iframe.className = 'modal-canva-frame';
-    iframe.src = toCanvaEmbed(post.canvaUrl);
+    iframe.src = toCanvaEmbedModal(post.canvaUrl);
     iframe.allowFullscreen = true;
     iframe.setAttribute('loading', 'lazy');
     clip.appendChild(iframe);
