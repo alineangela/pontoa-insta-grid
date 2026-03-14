@@ -150,37 +150,29 @@
     cursor: pointer;
   }
 
-  /* ══ MODAL ══
-     Backdrop centraliza o modal na tela sem scroll.
-     O modal é dividido em duas partes:
-     - Imagem: bordas retas em cima, preenche a largura inteira
-     - Legenda: rola internamente se precisar
-  */
+  /* ══ MODAL ══ */
   .modal-backdrop {
     display: none;
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.65);
+    background: rgba(0,0,0,0.7);
     z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 24px 16px;
+    padding: 16px;
     backdrop-filter: blur(4px);
-    /* Sem overflow-y — o backdrop não rola, o modal não rola */
   }
   .modal-backdrop.open { display: flex; }
 
   .modal {
     background: #fff;
-    border-radius: 0 0 14px 14px;
-    width: 100%;
-    max-width: 320px;
-    max-height: 92vh;
-    overflow-y: auto;
+    border-radius: 0 0 12px 12px;
+    width: 240px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     animation: modal-in 0.2s ease;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55);
   }
 
   @keyframes modal-in {
@@ -188,107 +180,65 @@
     to   { transform: scale(1);    opacity: 1; }
   }
 
-  /* Área de mídia: sem arredondamento — o modal já tem border-radius
-     e overflow:hidden cuida das bordas da imagem */
-  .modal-media {
-    width: 100%;
-    flex-shrink: 0;
-    position: relative;
-    background: #f0f0ee;
-    overflow: hidden;
-  }
+  .modal-media { width: 100%; flex-shrink: 0; position: relative; }
 
-  .modal-img-wrap {
-    width: 100%;
-    background: #111;
-  }
-  .modal-img {
-    width: 100%;
-    display: block;
-    object-fit: contain; /* mostra a imagem INTEIRA sem cortar */
-    max-height: 60vh;
-    background: #111;
-  }
+  .modal-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #111; }
+  .modal-img { width: 100%; height: 100%; display: block; object-fit: cover; }
 
-  .modal-canva-clip {
-    width: 100%;
-    height: 60vh;
-    overflow: hidden;
-    position: relative;
-    background: #111;
-  }
-  .modal-canva-frame {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: calc(60vh + 52px);
-    border: none;
-    display: block;
-  }
+  .modal-canva-clip { width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative; background: #111; }
+  .modal-canva-frame { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% + 52px); border: none; display: block; }
 
-  /* Carrossel */
-  .carousel {
-    position: relative; width: 100%;
-    height: 52vh; overflow: hidden;
-    background: #f0f0ee;
-  }
+  .carousel { position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #111; }
   .carousel-track { display: flex; height: 100%; transition: transform 0.32s ease; }
   .carousel-slide { min-width: 100%; height: 100%; }
   .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #1a1a1a; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 3; }
+  .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #1a1a1a; z-index: 3; }
   .carousel-arrow:hover { background: #fff; }
   .carousel-arrow:disabled { opacity: 0.2; pointer-events: none; }
-  .carousel-arrow.prev { left: 8px; }
-  .carousel-arrow.next { right: 8px; }
-  .carousel-dots { position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 3; }
-  .carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; }
+  .carousel-arrow.prev { left: 6px; }
+  .carousel-arrow.next { right: 6px; }
+  .carousel-dots { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 3; }
+  .carousel-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; }
   .carousel-dot.active { background: #fff; }
 
-  .modal-no-img { width: 100%; height: 52vh; background: #f0f0ee; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
+  .modal-no-img { width: 100%; aspect-ratio: 3/4; background: #f0f0ee; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 11px; }
 
-  .modal-body { padding: 12px 16px 18px; overflow: visible; }
+  .modal-body { padding: 11px 13px 15px; }
+  .modal-caption { font-size: 12px; color: #333; line-height: 1.65; margin-bottom: 8px; white-space: pre-line; word-break: break-word; }
+  .modal-meta { font-size: 10px; color: #aaa; border-top: 0.5px solid #eee; padding-top: 7px; }
 
-  .modal-caption {
-    font-size: 13px; color: #333; line-height: 1.7;
-    margin-bottom: 10px;
-    white-space: pre-line;
-    word-break: break-word;
-  }
-  .modal-meta { font-size: 11px; color: #aaa; border-top: 1px solid #f0f0ee; padding-top: 9px; }
-
-  /* Botão fechar: absoluto dentro do modal */
   .modal-close {
-    position: absolute; top: 10px; right: 10px;
-    width: 28px; height: 28px; border-radius: 50%;
+    position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px; border-radius: 50%;
     background: rgba(0,0,0,0.45); border: none; color: #fff;
-    font-size: 13px; cursor: pointer;
+    font-size: 11px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    z-index: 20; transition: background 0.15s;
+    z-index: 20;
   }
-  .modal-close:hover { background: rgba(0,0,0,0.7); }
+  .modal-close:hover { background: rgba(0,0,0,0.65); }
 
   .canva-badge {
-    position: absolute; top: 10px; left: 10px;
+    position: absolute; top: 8px; left: 8px;
     background: rgba(255,255,255,0.92); border-radius: 20px;
-    padding: 3px 9px; font-size: 10px; font-weight: 600; color: #7c3aed;
-    z-index: 10; display: flex; align-items: center; gap: 4px;
+    padding: 2px 8px; font-size: 9px; font-weight: 600; color: #7c3aed;
+    z-index: 10; display: flex; align-items: center; gap: 3px;
   }
 
-  /* Overlay de hover — sem zoom, só gradiente */
+  /* Overlay de hover — só gradiente, só data */
   .cell-overlay {
     position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 100%);
-    padding: 30px 9px 9px;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%);
+    padding: 24px 9px 8px;
     opacity: 0;
     transition: opacity 0.22s ease;
     pointer-events: none;
     z-index: 3;
   }
   .cell:hover .cell-overlay { opacity: 1; }
-  .cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
-  .cell-overlay-title { font-size: 11px; font-weight: 500; color: #fff; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.85); }
+  .cell-overlay-title { display: none; } /* título removido do feed */
 
-  .cell-pin { position: absolute; top: 7px; right: 7px; pointer-events: none; z-index: 4; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.55)); }
+  .cell-pin { position: absolute; top: 6px; right: 6px; pointer-events: none; z-index: 4; }
   .cell-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; color: #ccc; font-size: 10px; background: #f7f7f5; }
 
   .grid.drag-mode .cell { cursor: grab; }
@@ -434,16 +384,17 @@
 <script>
 const CAPTION_LIMIT = 2200;
 
-/* ── PUSHPIN SVG ── */
+/* ── PUSHPIN SVG — silhueta plana branca como na referência ── */
 function makePinSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  s.setAttribute('class','cell-pin'); s.setAttribute('width','15'); s.setAttribute('height','15');
-  s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none');
+  s.setAttribute('class','cell-pin');
+  s.setAttribute('width','14'); s.setAttribute('height','18');
+  s.setAttribute('viewBox','0 0 14 18'); s.setAttribute('fill','none');
   s.innerHTML = `
-    <path d="M9 3h6v2l1 1v5l-3 2v2H11v-2L8 11V6l1-1V3z"
-          fill="white" stroke="rgba(0,0,0,0.22)" stroke-width="0.8" stroke-linejoin="round"/>
-    <line x1="12" y1="13" x2="12" y2="21" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-    <line x1="9" y1="6" x2="15" y2="6" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>`;
+    <path d="M4 0h6v3.5c1.5 0.5 2.5 2 2.5 3.5H1.5C1.5 5.5 2.5 4 4 3.5V0Z"
+          fill="white"/>
+    <ellipse cx="7" cy="8.5" rx="5.5" ry="2" fill="white"/>
+    <path d="M7 10.5 L7 18" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
   return s;
 }
 
