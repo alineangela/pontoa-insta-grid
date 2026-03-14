@@ -29,22 +29,16 @@
     position: relative;
   }
 
-  /* ══ LOADING INICIAL ══ */
+  /* ══ LOADING ══ */
   .initial-loading {
     padding: 48px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    color: #aaa;
-    font-size: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    color: #aaa; font-size: 12px;
   }
   .spinner {
     width: 22px; height: 22px;
-    border: 2px solid #eee;
-    border-top-color: #1a1a1a;
-    border-radius: 50%;
-    animation: spin-icon 0.7s linear infinite;
+    border: 2px solid #eee; border-top-color: #1a1a1a;
+    border-radius: 50%; animation: spin-icon 0.7s linear infinite;
   }
 
   /* ══ PROFILE ══ */
@@ -117,12 +111,32 @@
   .cell { position: relative; aspect-ratio: 3/4; background: #f2f2f0; overflow: hidden; cursor: pointer; user-select: none; }
   .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; pointer-events: none; }
   .cell:hover img { transform: scale(1.04); }
-  .cell-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%); padding: 36px 9px 9px; transform: translateY(100%); transition: transform 0.25s ease; pointer-events: none; }
+
+  /* Canva thumbnail cell */
+  .cell-canva-thumb {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; background: #f5f2ff; color: #7c3aed; font-size: 9px;
+    font-weight: 500; text-align: center; padding: 8px;
+    transition: background 0.2s;
+  }
+  .cell:hover .cell-canva-thumb { background: #ede9ff; }
+  .cell-canva-thumb svg { opacity: 0.7; }
+  .cell-canva-label { font-size: 8px; color: #9d71f5; letter-spacing: 0.03em; text-transform: uppercase; }
+
+  .cell-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 100%);
+    padding: 36px 9px 9px; transform: translateY(100%); transition: transform 0.25s ease; pointer-events: none;
+  }
   .cell:hover .cell-overlay { transform: translateY(0); }
   .cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
   .cell-overlay-title { font-size: 11px; font-weight: 500; color: #fff; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
   .cell-pin { position: absolute; top: 7px; right: 7px; pointer-events: none; z-index: 2; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.55)); }
+
   .cell-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; color: #ccc; font-size: 10px; background: #f7f7f5; }
+
   .grid.drag-mode .cell { cursor: grab; }
   .grid.drag-mode .cell:active { cursor: grabbing; }
   .cell.drag-over { outline: 2.5px solid #1a1a1a; outline-offset: -2px; z-index: 1; }
@@ -145,18 +159,123 @@
   .brand a:hover { color: #555; }
 
   /* ══ MODAL ══ */
-  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
   .modal-backdrop.open { display: flex; }
-  .modal { background: #fff; border-radius: 14px; max-width: 340px; width: 100%; max-height: 90vh; overflow-y: auto; animation: modal-in 0.2s ease; position: relative; }
+  .modal {
+    background: #fff; border-radius: 14px;
+    max-width: 380px; width: 100%;
+    max-height: 92vh; overflow: hidden;
+    display: flex; flex-direction: column;
+    animation: modal-in 0.2s ease; position: relative;
+  }
   @keyframes modal-in { from { transform: scale(0.95) translateY(8px); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .modal-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; border-radius: 14px 14px 0 0; }
-  .modal-no-img { width: 100%; aspect-ratio: 3/4; background: #f2f2f0; border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px; }
-  .modal-body { padding: 15px 16px 18px; }
-  .modal-title { font-size: 14px; font-weight: 600; line-height: 1.3; color: #1a1a1a; margin-bottom: 5px; }
-  .modal-caption { font-size: 12px; color: #666; line-height: 1.55; margin-bottom: 10px; }
+
+  /* Área de mídia — sem border-radius, imagem no formato original */
+  .modal-media {
+    width: 100%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #f2f2f0;
+    position: relative;
+    border-radius: 14px 14px 0 0; /* só nas bordas externas do modal */
+  }
+
+  /* Imagem sem arredondar bordas — mantém formato original */
+  .modal-img {
+    width: 100%;
+    display: block;
+    object-fit: contain; /* mostra a imagem inteira sem cortar */
+    max-height: 55vh;
+    background: #f2f2f0;
+  }
+
+  /* Canva embed iframe */
+  .modal-canva-frame {
+    width: 100%;
+    height: 55vh;
+    border: none;
+    display: block;
+  }
+
+  /* Carrossel de imagens múltiplas */
+  .modal-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #f2f2f0;
+  }
+  .carousel-track {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  .carousel-slide {
+    min-width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: #f2f2f0;
+  }
+  .carousel-slide img {
+    width: 100%; max-height: 55vh;
+    object-fit: contain; display: block;
+    background: #f2f2f0;
+  }
+  /* Setas do carrossel */
+  .carousel-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #1a1a1a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 2; transition: background 0.15s;
+  }
+  .carousel-arrow:hover { background: #fff; }
+  .carousel-arrow.prev { left: 8px; }
+  .carousel-arrow.next { right: 8px; }
+  .carousel-arrow:disabled { opacity: 0.3; pointer-events: none; }
+  /* Dots do carrossel */
+  .carousel-dots {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 4px; z-index: 2;
+  }
+  .carousel-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255,255,255,0.5); cursor: pointer; transition: background 0.15s;
+  }
+  .carousel-dot.active { background: #fff; }
+
+  /* Placeholder modal */
+  .modal-no-img {
+    width: 100%; height: 220px; background: #f2f2f0;
+    display: flex; align-items: center; justify-content: center;
+    color: #ccc; font-size: 12px;
+  }
+
+  .modal-body { padding: 15px 16px 18px; overflow-y: auto; }
+  .modal-title { font-size: 14px; font-weight: 600; line-height: 1.3; color: #1a1a1a; margin-bottom: 8px; }
+
+  /* Legenda com parágrafos e espaços preservados */
+  .modal-caption {
+    font-size: 12px; color: #444; line-height: 1.65;
+    margin-bottom: 10px;
+    white-space: pre-line; /* preserva quebras de linha e parágrafos */
+    word-break: break-word;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
   .modal-meta { font-size: 11px; color: #aaa; border-top: 1px solid #f0f0ee; padding-top: 9px; }
-  .modal-close { position: absolute; top: 9px; right: 9px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.42); border: none; color: #fff; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
+  .modal-close { position: absolute; top: 9px; right: 9px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.42); border: none; color: #fff; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.15s; }
   .modal-close:hover { background: rgba(0,0,0,0.65); }
+
+  /* Indicador de Canva no modal */
+  .canva-badge {
+    position: absolute; top: 9px; left: 9px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 20px; padding: 3px 9px;
+    font-size: 10px; font-weight: 600; color: #7c3aed;
+    z-index: 10; display: flex; align-items: center; gap: 4px;
+  }
 
   /* ══ TOAST ══ */
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 20px; white-space: nowrap; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 2000; pointer-events: none; }
@@ -176,18 +295,9 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       </div>
       <div class="stats-row">
-        <div class="stat-item">
-          <span class="stat-num" id="statPosts">—</span>
-          <span class="stat-label">posts</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-num" id="statSeguidores">—</span>
-          <span class="stat-label">seguidores</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-num" id="statSeguindo">—</span>
-          <span class="stat-label">seguindo</span>
-        </div>
+        <div class="stat-item"><span class="stat-num" id="statPosts">—</span><span class="stat-label">posts</span></div>
+        <div class="stat-item"><span class="stat-num" id="statSeguidores">—</span><span class="stat-label">seguidores</span></div>
+        <div class="stat-item"><span class="stat-num" id="statSeguindo">—</span><span class="stat-label">seguindo</span></div>
       </div>
     </div>
     <div class="profile-name" id="profileName"></div>
@@ -216,15 +326,11 @@
       </svg>
       Atualizar
     </button>
-
     <button class="btn-icon" id="btnSettings" onclick="toggleSettings()" title="Configurações">
       <svg width="14" height="4" viewBox="0 0 14 4" fill="currentColor">
-        <circle cx="1.5" cy="2" r="1.5"/>
-        <circle cx="7"   cy="2" r="1.5"/>
-        <circle cx="12.5" cy="2" r="1.5"/>
+        <circle cx="1.5" cy="2" r="1.5"/><circle cx="7" cy="2" r="1.5"/><circle cx="12.5" cy="2" r="1.5"/>
       </svg>
     </button>
-
     <div class="settings-dropdown" id="settingsDropdown">
       <div class="settings-item">
         <span>Mostrar Bio</span>
@@ -262,8 +368,7 @@
   <!-- GRID -->
   <div class="grid" id="grid">
     <div class="initial-loading" style="grid-column:1/-1">
-      <div class="spinner"></div>
-      <span>Carregando…</span>
+      <div class="spinner"></div><span>Carregando…</span>
     </div>
   </div>
 
@@ -276,9 +381,9 @@
 
 <!-- MODAL -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
-  <div class="modal">
+  <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div id="modalTop"></div>
+    <div class="modal-media" id="modalMedia"></div>
     <div class="modal-body">
       <div class="modal-title"   id="modalTitle"></div>
       <div class="modal-caption" id="modalCaption"></div>
@@ -290,6 +395,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
+const CAPTION_LIMIT = 2200;
+
 /* ── PUSHPIN SVG ── */
 function makePinSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -301,6 +408,13 @@ function makePinSvg() {
     <line x1="12" y1="13" x2="12" y2="21" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
     <line x1="9" y1="6" x2="15" y2="6" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>`;
   return s;
+}
+
+/* ── CANVA URL → EMBED URL ── */
+function toCanvaEmbed(url) {
+  // Remove query string e adiciona ?embed para ativar o modo embed do Canva
+  const base = url.split('?')[0];
+  return base + '?embed';
 }
 
 /* ── STATE ── */
@@ -322,13 +436,10 @@ function fmtNum(n) {
   return String(n);
 }
 
-/* ── LOAD DATA FROM NOTION ── */
+/* ── LOAD DATA ── */
 async function loadData() {
-  // Spinner no ícone de atualizar
   const icon = document.getElementById('refreshIcon');
   icon.style.animation = 'spin-icon 0.7s linear infinite';
-
-  // Loading no grid
   document.getElementById('grid').innerHTML = `
     <div class="initial-loading" style="grid-column:1/-1">
       <div class="spinner"></div><span>Carregando…</span>
@@ -338,17 +449,15 @@ async function loadData() {
     const res = await fetch('/.netlify/functions/get-posts');
     if (!res.ok) throw new Error(`Erro ${res.status}: ${await res.text()}`);
     const data = await res.json();
-
     renderProfile(data.perfil);
     renderHighlights(data.destaques || []);
     initDisplayPosts(data.posts || []);
     renderGrid();
-
   } catch (e) {
     document.getElementById('grid').innerHTML = `
       <div class="error-state" style="grid-column:1/-1">
         <strong>Não foi possível carregar.</strong>
-        Verifique se as variáveis de ambiente estão configuradas no Netlify e se a integração está conectada à base de dados.<br><br>
+        Verifique as variáveis de ambiente no Netlify e se a integração está conectada à base de dados.<br><br>
         <em>${esc(e.message)}</em>
       </div>`;
   } finally {
@@ -359,20 +468,15 @@ async function loadData() {
 /* ── PROFILE ── */
 function renderProfile(p) {
   if (!p) return;
-
-  // Avatar
   if (p.imageUrl) {
     const av = document.getElementById('profileAvatar');
-    av.src = p.imageUrl;
-    av.style.display = 'block';
+    av.src = p.imageUrl; av.style.display = 'block';
     document.getElementById('avatarPlaceholder').style.display = 'none';
   }
-
   document.getElementById('profileName').textContent    = p.nome || '';
   document.getElementById('profileBio').textContent     = p.bio  || '';
   document.getElementById('statSeguidores').textContent = fmtNum(p.seguidores);
   document.getElementById('statSeguindo').textContent   = fmtNum(p.seguindo);
-
   if (p.link) {
     const linkEl = document.getElementById('profileLink');
     linkEl.href  = p.link.startsWith('http') ? p.link : 'https://' + p.link;
@@ -386,23 +490,18 @@ function renderHighlights(destaques) {
   const section = document.getElementById('highlightsSection');
   const row     = document.getElementById('highlightsRow');
   row.innerHTML = '';
-
   if (!destaques.length) { section.style.display = 'none'; return; }
   section.style.display = '';
-
   destaques.forEach(h => {
     const item  = document.createElement('div'); item.className = 'highlight-item';
     const ring  = document.createElement('div'); ring.className = 'highlight-ring' + (h.imageUrl ? ' active' : '');
     const inner = document.createElement('div'); inner.className = 'highlight-inner';
-
     if (h.imageUrl) {
-      const img = document.createElement('img');
-      img.src = h.imageUrl; img.alt = h.nome; img.loading = 'lazy';
+      const img = document.createElement('img'); img.src = h.imageUrl; img.alt = h.nome; img.loading = 'lazy';
       inner.appendChild(img);
     } else {
       inner.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`;
     }
-
     ring.appendChild(inner);
     const label = document.createElement('span'); label.className = 'highlight-label'; label.textContent = h.nome;
     item.appendChild(ring); item.appendChild(label);
@@ -433,7 +532,20 @@ function renderGrid() {
     const cell = document.createElement('div');
     cell.className = 'cell'; cell.dataset.idx = String(idx);
 
-    if (post.imageUrl && post.imageType !== 'canva') {
+    // Prioridade: canvaUrl > imageUrl > placeholder
+    if (post.canvaUrl) {
+      // Célula do grid para post do Canva — mostra thumb visual
+      const thumb = document.createElement('div');
+      thumb.className = 'cell-canva-thumb';
+      thumb.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="5" fill="#7c3aed" opacity="0.15"/>
+          <path d="M8 12C8 9.8 9.8 8 12 8C14.2 8 16 9.8 16 12C16 14.2 14.2 16 12 16" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="2" fill="#7c3aed"/>
+        </svg>
+        <span class="cell-canva-label">Canva</span>`;
+      cell.appendChild(thumb);
+    } else if (post.imageUrl) {
       const img = document.createElement('img');
       img.src = post.imageUrl; img.alt = post.title; img.loading = 'lazy';
       img.draggable = false;
@@ -450,7 +562,7 @@ function renderGrid() {
     cell.appendChild(ov);
 
     const handle = document.createElement('div'); handle.className = 'cell-handle'; handle.textContent = '⠿'; cell.appendChild(handle);
-    const badge  = document.createElement('div'); badge.className  = 'cell-date-badge'; badge.textContent = fmtShort(post.date); cell.appendChild(badge);
+    const badge  = document.createElement('div'); badge.className = 'cell-date-badge'; badge.textContent = fmtShort(post.date); cell.appendChild(badge);
 
     cell.addEventListener('click', () => { if (!dragMode) openModal(idx); });
     cell.draggable = true;
@@ -458,7 +570,6 @@ function renderGrid() {
     cell.addEventListener('dragover',  onDragOver);
     cell.addEventListener('drop',      onDrop);
     cell.addEventListener('dragend',   onDragEnd);
-
     grid.appendChild(cell);
   });
 }
@@ -469,22 +580,61 @@ function showPlaceholder(cell) {
   cell.appendChild(ph);
 }
 
-/* ── MODAL ── */
+/* ── MODAL ──
+   Prioridade: canvaUrl (iframe embed) > imageUrl (imagem/carrossel) > placeholder
+   Legenda: white-space:pre-line preserva parágrafos, limite 2200 chars
+   Imagem: object-fit:contain, sem border-radius
+*/
 function openModal(idx) {
-  const post = displayPosts[idx]; if (!post) return;
-  const top  = document.getElementById('modalTop');
-  if (post.imageUrl && post.imageType !== 'canva') {
-    top.innerHTML = `<img class="modal-img" src="${esc(post.imageUrl)}" alt="${esc(post.title)}">`;
+  const post   = displayPosts[idx]; if (!post) return;
+  const media  = document.getElementById('modalMedia');
+  media.innerHTML = '';
+
+  if (post.canvaUrl) {
+    // ── Canva embed com iframe — mostra todas as páginas com navegação nativa
+    const badge = document.createElement('div');
+    badge.className = 'canva-badge';
+    badge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12C8 9.8 9.8 8 12 8C14.2 8 16 9.8 16 12"/><circle cx="12" cy="12" r="2" fill="#7c3aed"/></svg> Canva`;
+    media.appendChild(badge);
+
+    const iframe = document.createElement('iframe');
+    iframe.className    = 'modal-canva-frame';
+    iframe.src          = toCanvaEmbed(post.canvaUrl);
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('loading', 'lazy');
+    media.appendChild(iframe);
+
+  } else if (post.imageUrl) {
+    // ── Imagem única sem arredondamento
+    const img = document.createElement('img');
+    img.className = 'modal-img';
+    img.src = post.imageUrl; img.alt = post.title;
+    media.appendChild(img);
+
   } else {
-    top.innerHTML = `<div class="modal-no-img">Sem imagem</div>`;
+    media.innerHTML = `<div class="modal-no-img">Sem imagem</div>`;
   }
-  document.getElementById('modalTitle').textContent   = post.title;
-  document.getElementById('modalCaption').textContent = post.legenda || '';
-  document.getElementById('modalCaption').style.display = post.legenda ? '' : 'none';
-  document.getElementById('modalMeta').textContent    = `📅 ${fmtFull(post.date)}`;
+
+  // Título
+  document.getElementById('modalTitle').textContent = post.title;
+
+  // Legenda: preserva parágrafos, respeita limite de 2200 chars
+  const captionEl = document.getElementById('modalCaption');
+  if (post.legenda) {
+    const text = post.legenda.length > CAPTION_LIMIT
+      ? post.legenda.slice(0, CAPTION_LIMIT) + '…'
+      : post.legenda;
+    captionEl.textContent = text; // textContent preserva o conteúdo; CSS white-space:pre-line exibe quebras
+    captionEl.style.display = '';
+  } else {
+    captionEl.style.display = 'none';
+  }
+
+  document.getElementById('modalMeta').textContent = `📅 ${fmtFull(post.date)}`;
   document.getElementById('modalBackdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function handleBackdropClick(e) { if (e.target===document.getElementById('modalBackdrop')) closeModal(); }
 function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); document.body.style.overflow=''; }
 
@@ -561,18 +711,13 @@ function onDragEnd(e) {
 async function saveReorder() {
   const btn = document.querySelector('.btn-save');
   btn.textContent = 'Salvando…'; btn.disabled = true;
-
   const sortedDates = [...originalPosts]
     .map(p => p.date)
     .sort((a,b) => { if (!a&&!b) return 0; if (!a) return 1; if (!b) return -1; return b.localeCompare(a); });
-
   const updates = displayPosts.map((p,i) => ({ id: p.id, date: sortedDates[i]||null }));
-
   try {
     const res = await fetch('/.netlify/functions/update-posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates)
     });
     if (!res.ok) throw new Error(await res.text());
     displayPosts = displayPosts.map((p,i) => ({...p, date: sortedDates[i]||null}));
