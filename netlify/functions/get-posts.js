@@ -1,6 +1,6 @@
 // netlify/functions/get-posts.js
-// Busca todos os dados de uma única base de dados com Tipo = Perfil | Destaque | Post
-// Prioridade de imagem: canvaUrl > imageUrl
+// Retorna perfil, destaques e posts de uma única base de dados Notion.
+// Posts incluem array completo de imagens para carrossel.
 
 exports.handler = async () => {
   const token = process.env.NOTION_TOKEN;
@@ -39,42 +39,47 @@ exports.handler = async () => {
     const getUrl   = p => p?.url || null;
     const getSel   = p => p?.select?.name || null;
 
-    function getMedia(props, page) {
-      // Tenta primeiro a propriedade de arquivo (imagem enviada diretamente)
+    // Retorna TODOS os arquivos de uma propriedade como array de URLs
+    function getAllImages(props, page) {
       const fileProp =
-        props['Imagem'] || props['Image'] || props['Capa'] || props['Cover'] ||
+        props['Imagem'] || props['Imagens'] || props['Image'] || props['Images'] ||
+        props['Capa']   || props['Cover']   ||
         Object.values(props).find(p => p.type === 'files');
 
-      let imageUrl  = null;
-      let canvaUrl  = null;
+      const images = [];
 
       if (fileProp?.files?.length > 0) {
-        const f = fileProp.files[0];
-        imageUrl = f.type === 'external' ? f.external.url : f.file?.url;
-      }
-
-      // Tenta propriedade URL — separa Canva de imagem comum
-      const urlProp =
-        props['Link'] || props['URL'] ||
-        Object.values(props).find(p => p.type === 'url');
-
-      if (urlProp?.url) {
-        const u = urlProp.url;
-        if (u.includes('canva.com')) {
-          canvaUrl = u; // guarda separado — tem prioridade no display
-        } else if (!imageUrl) {
-          imageUrl = u; // só usa como imagem se não tiver arquivo
+        for (const f of fileProp.files) {
+          const url = f.type === 'external' ? f.external.url : f.file?.url;
+          if (url) images.push(url);
         }
       }
 
       // Fallback: capa da página no Notion
-      if (!imageUrl && !canvaUrl && page.cover) {
-        imageUrl = page.cover.type === 'external'
+      if (images.length === 0 && page.cover) {
+        const url = page.cover.type === 'external'
           ? page.cover.external.url
           : page.cover.file?.url;
+        if (url) images.push(url);
       }
 
-      return { imageUrl, canvaUrl };
+      return images; // array completo — pode ter múltiplas imagens
+    }
+
+    function getCanvaUrl(props) {
+      const urlProp =
+        props['Link'] || props['URL'] ||
+        Object.values(props).find(p => p.type === 'url');
+      if (!urlProp?.url) return null;
+      return urlProp.url.includes('canva.com') ? urlProp.url : null;
+    }
+
+    function getNonCanvaUrl(props) {
+      const urlProp =
+        props['Link'] || props['URL'] ||
+        Object.values(props).find(p => p.type === 'url');
+      if (!urlProp?.url) return null;
+      return !urlProp.url.includes('canva.com') ? urlProp.url : null;
     }
 
     function isPinned(props) {
@@ -103,7 +108,11 @@ exports.handler = async () => {
         Object.values(props).find(p => p.type === 'title');
       const nome = getTitle(titleProp);
 
-      const { imageUrl, canvaUrl } = getMedia(props, page);
+      const images   = getAllImages(props, page);
+      const canvaUrl = getCanvaUrl(props);
+
+      // imageUrl: primeira imagem do array, ou URL externa não-Canva
+      let imageUrl = images[0] || getNonCanvaUrl(props) || null;
 
       if (tipo === 'Perfil') {
         perfil = {
@@ -117,12 +126,13 @@ exports.handler = async () => {
         };
 
       } else if (tipo === 'Destaque') {
-        const ordemProp = props['Ordem'] || props['Order'];
         destaques.push({
           id:        page.id,
           nome,
           descricao: getText(props['Descrição do Destaque'] || props['Descrição'] || props['Description']),
-          ordem:     getNum(ordemProp) !== null ? getNum(ordemProp) : naturalIndex * 1000,
+          ordem:     getNum(props['Ordem'] || props['Order']) !== null
+                       ? getNum(props['Ordem'] || props['Order'])
+                       : naturalIndex * 1000,
           imageUrl,
           canvaUrl
         });
@@ -147,7 +157,8 @@ exports.handler = async () => {
           title:    nome,
           legenda:  getText(legendaProp),
           date:     getDate(dateProp),
-          imageUrl,
+          images,        // array completo de imagens
+          imageUrl,      // primeira imagem (atalho)
           canvaUrl,
           pinned:   isPinned(props)
         });
