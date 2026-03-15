@@ -375,20 +375,23 @@
 <script>
 const CAPTION_LIMIT = 2200;
 
-/* ── PUSHPIN SVG — silhueta fiel à referência ── */
+/* ── PUSHPIN SVG — silhueta exata, rotacionado 45° como no Instagram ── */
 function makePinSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
   s.setAttribute('class','cell-pin');
-  s.setAttribute('width','16'); s.setAttribute('height','20');
-  s.setAttribute('viewBox','0 0 100 125');
+  s.setAttribute('width','18'); s.setAttribute('height','18');
+  s.setAttribute('viewBox','0 0 100 100');
   s.innerHTML = `
-    <path fill="white" d="
-      M30,5 Q30,2 50,2 Q70,2 70,5
-      L70,22 Q85,22 85,32 Q85,38 78,40
-      L58,40 L58,48 Q58,52 50,52 Q42,52 42,48
-      L42,40 L22,40 Q15,38 15,32 Q15,22 30,22 Z
-      M44,52 L44,95 Q44,100 50,100 Q56,100 56,95 L56,52 Z
-    "/>`;
+    <g transform="rotate(45, 50, 50)" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.6))">
+      <!-- Chapéu côncavo -->
+      <path d="M20,28 Q20,10 50,10 Q80,10 80,28 Q80,36 64,38 L36,38 Q20,36 20,28Z" fill="white"/>
+      <!-- Pescoço -->
+      <rect x="43" y="38" width="14" height="16" fill="white"/>
+      <!-- Corpo redondo -->
+      <ellipse cx="50" cy="66" rx="16" ry="13" fill="white"/>
+      <!-- Agulha -->
+      <polygon points="44,78 56,78 52,96 48,96" fill="white"/>
+    </g>`;
   return s;
 }
 
