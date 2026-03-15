@@ -31,10 +31,10 @@ body {
 .avatar-placeholder { width: 77px; height: 77px; border-radius: 50%; background: #efefef; border: 2px solid #dbdbdb; display: flex; align-items: center; justify-content: center; color: #aaa; flex-shrink: 0; }
 .profile-right { flex: 1; display: flex; flex-direction: column; gap: 6px; }
 .profile-name { font-size: 15px; font-weight: 600; color: #1a1a1a; letter-spacing: -0.01em; }
-.stats-row { display: flex; }
-.stat-item { display: flex; flex-direction: row; align-items: baseline; gap: 4px; margin-right: 20px; }
-.stat-num { font-size: 15px; font-weight: 700; color: #1a1a1a; }
-.stat-label { font-size: 13px; color: #1a1a1a; }
+.stats-row { display: flex; gap: 24px; }
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.stat-num { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+.stat-label { font-size: 13px; color: #1a1a1a; font-weight: 400; }
 .profile-bio { font-size: 13px; color: #1a1a1a; line-height: 1.55; margin-bottom: 5px; white-space: pre-line; }
 .profile-link { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #00376b; font-weight: 500; text-decoration: none; margin-bottom: 12px; }
 .profile-link:hover { text-decoration: underline; }
@@ -171,8 +171,8 @@ body {
 .modal-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #111; }
 .modal-img { width: 100%; height: 100%; display: block; object-fit: cover; }
 
-/* Vídeo no modal */
-.modal-video { width: 100%; aspect-ratio: 3/4; display: block; background: #000; object-fit: contain; }
+/* Vídeo no modal — proporção 9:16 para reels/stories */
+.modal-video { width: 100%; aspect-ratio: 9/16; display: block; background: #000; object-fit: cover; }
 
 .modal-canva-clip { width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative; background: #111; }
 .modal-canva-frame { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% + 52px); border: none; display: block; }
