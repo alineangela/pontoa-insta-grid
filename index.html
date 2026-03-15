@@ -121,7 +121,7 @@
     width: 100%; height: 100%;
     position: relative;
     overflow: hidden;
-    background: #111;
+    background: #000;
   }
   .cell-canva-iframe {
     position: absolute;
@@ -129,9 +129,6 @@
     width: 100%; height: 100%;
     border: none;
     pointer-events: none;
-    /* zoom leve para cobrir qualquer padding interno do Canva */
-    transform: scale(1.08);
-    transform-origin: top center;
   }
 
   /* Overlay clicável que fica acima do iframe e da faixa */
@@ -159,7 +156,8 @@
   .modal {
     background: #fff;
     border-radius: 0 0 12px 12px;
-    width: 240px;
+    width: 90vw;
+    max-width: 340px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
