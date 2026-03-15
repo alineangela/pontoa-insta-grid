@@ -121,24 +121,16 @@
     width: 100%; height: 100%;
     position: relative;
     overflow: hidden;
-    background: #1a1a1a; /* fundo escuro enquanto o iframe carrega */
+    background: #111;
   }
-
+  /* iframe ocupa 100% da largura e altura dupla — overflow:hidden clipa tudo */
   .cell-canva-iframe {
     position: absolute;
     top: 0; left: 0;
+    width: 100%;
+    height: 200%;
     border: none;
     pointer-events: none;
-  }
-
-  /* Cobre qualquer rastro de barra de nav na base */
-  .cell-canva-wrap::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 20px;
-    background: #1a1a1a;
-    z-index: 3;
   }
 
   /* Overlay clicável que fica acima do iframe e da faixa */
@@ -384,17 +376,20 @@
 <script>
 const CAPTION_LIMIT = 2200;
 
-/* ── PUSHPIN SVG — silhueta plana branca como na referência ── */
+/* ── PUSHPIN SVG — silhueta fiel à referência ── */
 function makePinSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
   s.setAttribute('class','cell-pin');
-  s.setAttribute('width','14'); s.setAttribute('height','18');
-  s.setAttribute('viewBox','0 0 14 18'); s.setAttribute('fill','none');
+  s.setAttribute('width','16'); s.setAttribute('height','20');
+  s.setAttribute('viewBox','0 0 100 125');
   s.innerHTML = `
-    <path d="M4 0h6v3.5c1.5 0.5 2.5 2 2.5 3.5H1.5C1.5 5.5 2.5 4 4 3.5V0Z"
-          fill="white"/>
-    <ellipse cx="7" cy="8.5" rx="5.5" ry="2" fill="white"/>
-    <path d="M7 10.5 L7 18" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
+    <path fill="white" d="
+      M30,5 Q30,2 50,2 Q70,2 70,5
+      L70,22 Q85,22 85,32 Q85,38 78,40
+      L58,40 L58,48 Q58,52 50,52 Q42,52 42,48
+      L42,40 L22,40 Q15,38 15,32 Q15,22 30,22 Z
+      M44,52 L44,95 Q44,100 50,100 Q56,100 56,95 L56,52 Z
+    "/>`;
   return s;
 }
 
@@ -408,33 +403,6 @@ function toCanvaEmbedModal(url) {
   return url.split('?')[0] + '?embed';
 }
 
-/* Escala o iframe do Canva para cobrir a célula inteira (como object-fit:cover).
-   O Canva embed renderiza em ~800×1000px de conteúdo visível.
-   Usamos srcH menor que a altura real para forçar cobertura vertical. */
-function scaleCanvaCell(wrap, iframe) {
-  function doScale() {
-    const cellW = wrap.offsetWidth;
-    const cellH = wrap.offsetHeight;
-    if (!cellW || !cellH) return false;
-
-    const srcW = 800;
-    const srcH = 960; // menor que a altura real → escala maior → cobre sem faixas
-
-    // Math.max = cover (corta os excessos, sem faixas)
-    const scale = Math.max(cellW / srcW, cellH / srcH);
-
-    iframe.style.width           = srcW + 'px';
-    iframe.style.height          = (srcH + 60) + 'px'; // +60 empurra nav bar pra fora
-    iframe.style.transform       = `scale(${scale})`;
-    iframe.style.transformOrigin = 'top left';
-    return true;
-  }
-
-  if (!doScale()) {
-    const ro = new ResizeObserver(() => { if (doScale()) ro.disconnect(); });
-    ro.observe(wrap);
-  }
-}
 
 /* ── STATE ── */
 let displayPosts  = [];
@@ -566,7 +534,6 @@ function renderGrid() {
       blocker.className = 'cell-canva-blocker';
       wrap.appendChild(blocker);
 
-      scaleCanvaCell(wrap, iframe);
       cell.appendChild(wrap);
 
     } else if (post.imageUrl) {
