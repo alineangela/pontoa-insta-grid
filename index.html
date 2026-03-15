@@ -123,14 +123,15 @@
     overflow: hidden;
     background: #111;
   }
-  /* iframe ocupa 100% da largura e altura dupla — overflow:hidden clipa tudo */
   .cell-canva-iframe {
     position: absolute;
     top: 0; left: 0;
-    width: 100%;
-    height: 200%;
+    width: 100%; height: 100%;
     border: none;
     pointer-events: none;
+    /* zoom leve para cobrir qualquer padding interno do Canva */
+    transform: scale(1.08);
+    transform-origin: top center;
   }
 
   /* Overlay clicável que fica acima do iframe e da faixa */
