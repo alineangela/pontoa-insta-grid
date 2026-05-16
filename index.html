@@ -51,7 +51,7 @@ body {
 
 .section-divider { height: 1px; background: #dbdbdb; }
 
-/* TAB BAR — Grid / Reels */
+/* TAB BAR */
 .tab-bar { display: flex; border-bottom: 1px solid #dbdbdb; }
 .tab-btn { flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px 0; background: transparent; border: none; cursor: pointer; color: #aaa; border-bottom: 2px solid transparent; transition: all 0.15s; }
 .tab-btn.active { color: #1a1a1a; border-bottom-color: #1a1a1a; }
@@ -59,37 +59,38 @@ body {
 
 /* TOOLBAR */
 .toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; position: relative; }
+
+/* Estado normal da toolbar */
+#toolbarNormal { display: flex; align-items: center; gap: 8px; width: 100%; }
+#toolbarNormal .spacer { flex: 1; }
+
+/* Estado reorder da toolbar */
+#toolbarReorder { display: none; align-items: center; gap: 8px; width: 100%; }
+#toolbarReorder .reorder-label { font-size: 12px; color: #777; flex: 1; }
+
 .btn-refresh { display: flex; align-items: center; gap: 6px; font-family: inherit; font-size: 12px; font-weight: 500; color: #fff; background: #1a1a1a; border: none; border-radius: 7px; padding: 7px 13px; cursor: pointer; }
 .btn-refresh:hover { background: #333; }
-.btn-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #ddd; border-radius: 7px; cursor: pointer; color: #555; }
+.btn-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #ddd; border-radius: 7px; cursor: pointer; color: #555; flex-shrink: 0; }
 .btn-icon:hover, .btn-icon.active { background: #f2f2f0; color: #1a1a1a; border-color: #bbb; }
 
-/* SETTINGS */
-.settings-dropdown { display: none; position: absolute; top: calc(100% + 2px); right: 14px; width: 265px; background: #fff; border: 1px solid #e0e0de; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 100; }
+/* SETTINGS DROPDOWN */
+.settings-dropdown { display: none; position: absolute; top: calc(100% + 2px); right: 14px; width: 220px; background: #fff; border: 1px solid #e0e0de; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 100; }
 .settings-dropdown.open { display: block; }
 .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; font-size: 13px; color: #1a1a1a; border-bottom: 1px solid #f2f2f0; gap: 10px; }
 .settings-item:last-of-type { border-bottom: none; }
-.settings-item.clickable { cursor: pointer; }
-.settings-item.clickable:hover { background: #fafaf8; }
 .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
 .toggle input { opacity: 0; width: 0; height: 0; }
 .toggle-track { position: absolute; inset: 0; background: #ddd; border-radius: 11px; transition: background 0.2s; }
 .toggle input:checked + .toggle-track { background: #ff6b35; }
 .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); pointer-events: none; }
 .toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
-.radio-outer { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.radio-outer.checked { border-color: #ff6b35; }
-.radio-inner { width: 10px; height: 10px; border-radius: 50%; background: #ff6b35; display: none; }
-.radio-outer.checked .radio-inner { display: block; }
-.settings-hint { padding: 10px 14px 12px; font-size: 11px; color: #999; line-height: 1.5; border-top: 1px solid #f2f2f0; }
 
-/* REORDER BAR */
-.reorder-bar { display: none; align-items: center; justify-content: space-between; padding: 8px 14px; background: #fafaf8; border-bottom: 1px solid #e4e4e3; font-size: 11px; color: #777; gap: 10px; }
-.reorder-bar.visible { display: flex; }
-.reorder-actions { display: flex; gap: 6px; }
-.btn-sm { font-family: inherit; font-size: 11px; font-weight: 500; border-radius: 5px; padding: 4px 10px; cursor: pointer; border: 1px solid; }
+/* BOTÕES INLINE DE REORDER */
+.btn-sm { font-family: inherit; font-size: 11px; font-weight: 500; border-radius: 5px; padding: 5px 11px; cursor: pointer; border: 1px solid; white-space: nowrap; }
 .btn-cancel { background: transparent; color: #888; border-color: #ccc; }
+.btn-cancel:hover { background: #f5f5f3; }
 .btn-save { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.btn-save:hover { background: #333; }
 
 /* GRID 3:4 */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #dbdbdb; }
@@ -100,13 +101,11 @@ body {
 .cell-canva-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
 .cell-canva-blocker { position: absolute; inset: 0; z-index: 4; background: transparent; cursor: pointer; }
 
-/* Video badge no grid */
 .cell-video-badge { position: absolute; bottom: 7px; left: 7px; z-index: 4; pointer-events: none; }
 
 .cell-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%); padding: 24px 9px 8px; opacity: 0; transition: opacity 0.22s ease; pointer-events: none; z-index: 3; }
 .cell:hover .cell-overlay { opacity: 1; }
 .cell-overlay-date { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.85); }
-.cell-overlay-title { display: none; }
 
 .cell-pin { position: absolute; top: 6px; right: 6px; pointer-events: none; z-index: 4; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6)); }
 .cell-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; background: #f7f7f5; }
@@ -119,7 +118,7 @@ body {
 .cell-handle { display: none; position: absolute; top: 6px; left: 6px; background: rgba(255,255,255,0.9); border-radius: 3px; width: 20px; height: 20px; align-items: center; justify-content: center; font-size: 10px; color: #555; pointer-events: none; z-index: 4; }
 .grid.drag-mode .cell-handle { display: flex; }
 
-/* REELS — proporção 9:16 (story) */
+/* REELS */
 .reels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #dbdbdb; }
 .reel-cell { position: relative; aspect-ratio: 9/16; background: #111; overflow: hidden; cursor: pointer; }
 .reel-cell img, .reel-cell video { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -132,13 +131,11 @@ body {
 .error-state strong { display: block; margin-bottom: 6px; font-size: 13px; }
 
 /* FOOTER */
-.footer { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-top: 1px solid #e4e4e3; }
-.reorder-btn { font-family: inherit; font-size: 11px; color: #888; background: transparent; border: 1px solid #ddd; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
-.reorder-btn:hover { background: #f2f2f0; color: #444; border-color: #bbb; }
+.footer { display: flex; align-items: center; justify-content: flex-end; padding: 9px 14px; border-top: 1px solid #e4e4e3; }
 .brand { font-size: 10px; color: #bbb; }
 .brand a { color: #999; text-decoration: none; font-weight: 500; }
 
-/* MODAL — sempre centralizado via position:fixed */
+/* MODAL */
 .modal-backdrop {
   display: none;
   position: fixed; inset: 0;
@@ -171,7 +168,6 @@ body {
 .modal-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #111; }
 .modal-img { width: 100%; height: 100%; display: block; object-fit: cover; }
 
-/* Vídeo no modal — proporção 9:16 para reels/stories */
 .modal-video { width: 100%; aspect-ratio: 9/16; display: block; background: #000; object-fit: cover; }
 
 .modal-canva-clip { width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative; background: #111; }
@@ -260,30 +256,37 @@ body {
 
   <!-- TOOLBAR -->
   <div class="toolbar">
-    <button class="btn-refresh" onclick="loadData()">
-      <svg id="refreshIcon" width="13" height="13" viewBox="0 0 16 16" fill="white">
-        <path d="M13.6 2.4A7 7 0 1 0 15 8h-1.5A5.5 5.5 0 1 1 10.8 3.7L9 5.5H14V.5L13.6 2.4z"/>
-      </svg>
-      Atualizar
-    </button>
-    <button class="btn-icon" id="btnSettings" onclick="toggleSettings()">
-      <svg width="14" height="4" viewBox="0 0 14 4" fill="currentColor"><circle cx="1.5" cy="2" r="1.5"/><circle cx="7" cy="2" r="1.5"/><circle cx="12.5" cy="2" r="1.5"/></svg>
-    </button>
+
+    <!-- Estado normal -->
+    <div id="toolbarNormal">
+      <button class="btn-refresh" onclick="loadData()">
+        <svg id="refreshIcon" width="13" height="13" viewBox="0 0 16 16" fill="white">
+          <path d="M13.6 2.4A7 7 0 1 0 15 8h-1.5A5.5 5.5 0 1 1 10.8 3.7L9 5.5H14V.5L13.6 2.4z"/>
+        </svg>
+        Atualizar
+      </button>
+      <div class="spacer"></div>
+      <button class="btn-icon" id="btnReorder" onclick="toggleReorder()" title="Reordenar posts">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M8 4l-4 4 4 4M16 4l4 4-4 4M4 8h16M4 16h16M8 12l-4 4 4 4M16 12l4 4-4 4"/>
+        </svg>
+      </button>
+      <button class="btn-icon" id="btnSettings" onclick="toggleSettings()">
+        <svg width="14" height="4" viewBox="0 0 14 4" fill="currentColor"><circle cx="1.5" cy="2" r="1.5"/><circle cx="7" cy="2" r="1.5"/><circle cx="12.5" cy="2" r="1.5"/></svg>
+      </button>
+    </div>
+
+    <!-- Estado reorder -->
+    <div id="toolbarReorder">
+      <span class="reorder-label">Arraste para reordenar</span>
+      <button class="btn-sm btn-cancel" onclick="cancelReorder()">Cancelar</button>
+      <button class="btn-sm btn-save" id="btnSave" onclick="saveReorder()">Reagendar ✓</button>
+    </div>
+
+    <!-- Dropdown de configurações -->
     <div class="settings-dropdown" id="settingsDropdown">
       <div class="settings-item"><span>Mostrar Bio</span><label class="toggle"><input type="checkbox" id="toggleBio" checked onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
-      <div class="settings-item"><span>Mostrar Highlights</span><label class="toggle"><input type="checkbox" id="toggleHighlights" checked onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
-      <div class="settings-item clickable" onclick="setSortMode('date')"><span>Ordenar por data</span><div class="radio-outer checked" id="radioDate"><div class="radio-inner"></div></div></div>
-      <div class="settings-item clickable" onclick="setSortMode('custom')" style="border-bottom:none"><span>Ordem personalizada</span><div class="radio-outer" id="radioCustom"><div class="radio-inner"></div></div></div>
-      <div class="settings-hint">Para editar a ordem manualmente, use "Editar ordem" abaixo do grid.</div>
-    </div>
-  </div>
-
-  <!-- REORDER BAR -->
-  <div class="reorder-bar" id="reorderBar">
-    <span>Arraste os posts para reordenar.</span>
-    <div class="reorder-actions">
-      <button class="btn-sm btn-cancel" onclick="cancelReorder()">Cancelar</button>
-      <button class="btn-sm btn-save" onclick="saveReorder()">Reagendar ✓</button>
+      <div class="settings-item" style="border-bottom:none"><span>Mostrar Highlights</span><label class="toggle"><input type="checkbox" id="toggleHighlights" checked onchange="applySettings()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
     </div>
   </div>
 
@@ -302,7 +305,6 @@ body {
   </div>
 
   <div class="footer">
-    <button class="reorder-btn" id="reorderBtn" onclick="toggleReorder()">⇅ Editar ordem</button>
     <div class="brand">feito com <a href="#">pontoa</a></div>
   </div>
 </div>
@@ -326,7 +328,7 @@ const CAPTION_LIMIT = 2200;
 let currentTab = 'grid';
 let allReels   = [];
 
-/* ── PIN SVG — arquivo pin-icon.svg exato, branco ── */
+/* ── PIN SVG ── */
 function makePinSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
   s.setAttribute('class','cell-pin');
@@ -345,17 +347,30 @@ function makeVideoBadge() {
 }
 
 /* ── CANVA ── */
-function toCanvaEmbedCell(url)  { return url.split('?')[0] + '?embed#1'; }
-function toCanvaEmbedModal(url) { return url.split('?')[0] + '?embed'; }
+function normalizeCanvaUrl(url) {
+  if (!url) return null;
+  const clean = url.split('?')[0].split('#')[0];
+  if (!/canva\.com\/design\//i.test(clean)) return null;
+  return clean;
+}
+function toCanvaEmbedCell(url) {
+  const clean = normalizeCanvaUrl(url);
+  return clean ? clean + '/view?embed' : null;
+}
+function toCanvaEmbedModal(url) {
+  const clean = normalizeCanvaUrl(url);
+  return clean ? clean + '/view?embed' : null;
+}
 
 /* ── TABS ── */
 function switchTab(tab) {
   currentTab = tab;
   document.getElementById('tabGrid').classList.toggle('active', tab === 'grid');
   document.getElementById('tabReels').classList.toggle('active', tab === 'reels');
-  document.getElementById('gridSection').style.display   = tab === 'grid'   ? '' : 'none';
-  document.getElementById('reelsSection').style.display  = tab === 'reels'  ? '' : 'none';
-  document.getElementById('reorderBtn').style.display    = tab === 'grid'   ? '' : 'none';
+  document.getElementById('gridSection').style.display  = tab === 'grid'  ? '' : 'none';
+  document.getElementById('reelsSection').style.display = tab === 'reels' ? '' : 'none';
+  // Oculta botão de reorder na aba de reels
+  document.getElementById('btnReorder').style.display = tab === 'grid' ? '' : 'none';
 }
 
 /* ── STATE ── */
@@ -364,7 +379,6 @@ let originalPosts = [];
 let dragMode      = false;
 let dragSrcIdx    = null;
 let settingsOpen  = false;
-let sortMode      = 'date';
 
 /* ── HELPERS ── */
 function fmtShort(d) { if (!d) return ''; return new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'short'}); }
@@ -403,7 +417,11 @@ async function loadData() {
 /* ── PROFILE ── */
 function renderProfile(p) {
   if (!p) return;
-  if (p.imageUrl) { const av = document.getElementById('profileAvatar'); av.src = p.imageUrl; av.style.display='block'; document.getElementById('avatarPlaceholder').style.display='none'; }
+  if (p.imageUrl) {
+    const av = document.getElementById('profileAvatar');
+    av.src = p.imageUrl; av.style.display = 'block';
+    document.getElementById('avatarPlaceholder').style.display = 'none';
+  }
   document.getElementById('profileName').textContent    = p.nome || '';
   document.getElementById('profileBio').textContent     = p.bio  || '';
   document.getElementById('statSeguidores').textContent = fmtNum(p.seguidores);
@@ -422,23 +440,23 @@ function renderHighlights(destaques) {
   const row = document.getElementById('highlightsRow');
   row.innerHTML = '';
   if (!destaques.length) { section.style.display='none'; return; }
-  section.style.display='';
+  section.style.display = '';
   destaques.forEach(h => {
-    const item=document.createElement('div'); item.className='highlight-item';
-    const ring=document.createElement('div'); ring.className='highlight-ring';
-    const inner=document.createElement('div'); inner.className='highlight-inner';
-    if (h.imageUrl) { const img=document.createElement('img'); img.src=h.imageUrl; img.loading='lazy'; inner.appendChild(img); }
-    else inner.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`;
+    const item = document.createElement('div'); item.className = 'highlight-item';
+    const ring = document.createElement('div'); ring.className = 'highlight-ring';
+    const inner = document.createElement('div'); inner.className = 'highlight-inner';
+    if (h.imageUrl) { const img = document.createElement('img'); img.src = h.imageUrl; img.loading = 'lazy'; inner.appendChild(img); }
+    else inner.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`;
     ring.appendChild(inner);
-    const label=document.createElement('span'); label.className='highlight-label'; label.textContent=h.nome;
+    const label = document.createElement('span'); label.className = 'highlight-label'; label.textContent = h.nome;
     item.appendChild(ring); item.appendChild(label); row.appendChild(item);
   });
 }
 
 /* ── POSTS ── */
 function initDisplayPosts(posts) {
-  const src = posts.map(p=>({...p}));
-  displayPosts = sortMode==='date' ? src.sort((a,b)=>(b.date||'').localeCompare(a.date||'')) : src;
+  // Sempre ordena por data (decrescente)
+  displayPosts = posts.map(p=>({...p})).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
 
 function renderGrid() {
@@ -446,20 +464,25 @@ function renderGrid() {
   grid.innerHTML = '';
   grid.classList.toggle('drag-mode', dragMode);
   document.getElementById('statPosts').textContent = displayPosts.length || '—';
-  if (!displayPosts.length) { grid.innerHTML=`<div class="initial-loading" style="grid-column:1/-1"><span>Nenhum post encontrado.</span></div>`; return; }
-
+  if (!displayPosts.length) {
+    grid.innerHTML = `<div class="initial-loading" style="grid-column:1/-1"><span>Nenhum post encontrado.</span></div>`;
+    return;
+  }
   displayPosts.forEach((post, idx) => {
-    const cell = document.createElement('div'); cell.className='cell'; cell.dataset.idx=String(idx);
+    const cell = document.createElement('div'); cell.className = 'cell'; cell.dataset.idx = String(idx);
     buildCellContent(cell, post);
     if (post.pinned) cell.appendChild(makePinSvg());
-    const ov=document.createElement('div'); ov.className='cell-overlay';
-    ov.innerHTML=`<div class="cell-overlay-date">${esc(fmtShort(post.date))}</div>`;
+    const ov = document.createElement('div'); ov.className = 'cell-overlay';
+    ov.innerHTML = `<div class="cell-overlay-date">${esc(fmtShort(post.date))}</div>`;
     cell.appendChild(ov);
-    const handle=document.createElement('div'); handle.className='cell-handle'; handle.textContent='⠿'; cell.appendChild(handle);
-    const badge=document.createElement('div'); badge.className='cell-date-badge'; badge.textContent=fmtShort(post.date); cell.appendChild(badge);
+    const handle = document.createElement('div'); handle.className = 'cell-handle'; handle.textContent = '⠿'; cell.appendChild(handle);
+    const badge = document.createElement('div'); badge.className = 'cell-date-badge'; badge.textContent = fmtShort(post.date); cell.appendChild(badge);
     cell.addEventListener('click', ()=>{ if (!dragMode) openModal(idx, 'posts'); });
-    cell.draggable=true;
-    cell.addEventListener('dragstart',onDragStart); cell.addEventListener('dragover',onDragOver); cell.addEventListener('drop',onDrop); cell.addEventListener('dragend',onDragEnd);
+    cell.draggable = true;
+    cell.addEventListener('dragstart', onDragStart);
+    cell.addEventListener('dragover',  onDragOver);
+    cell.addEventListener('drop',      onDrop);
+    cell.addEventListener('dragend',   onDragEnd);
     grid.appendChild(cell);
   });
 }
@@ -468,46 +491,52 @@ function renderGrid() {
 function renderReels() {
   const grid = document.getElementById('reelsGrid');
   grid.innerHTML = '';
-  if (!allReels.length) { grid.innerHTML=`<div class="initial-loading" style="grid-column:1/-1"><span>Nenhum reel encontrado.</span></div>`; return; }
+  if (!allReels.length) {
+    grid.innerHTML = `<div class="initial-loading" style="grid-column:1/-1"><span>Nenhum reel encontrado.</span></div>`;
+    return;
+  }
   allReels.forEach((reel, idx) => {
-    const cell = document.createElement('div'); cell.className='reel-cell';
+    const cell = document.createElement('div'); cell.className = 'reel-cell';
     buildCellContent(cell, reel);
-    // Play badge for video/canva
-    const playBadge = document.createElement('div'); playBadge.className='reel-play-badge';
-    playBadge.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.4)"/><polygon points="10,8 17,12 10,16" fill="white"/></svg>`;
+    const playBadge = document.createElement('div'); playBadge.className = 'reel-play-badge';
+    playBadge.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.4)"/><polygon points="10,8 17,12 10,16" fill="white"/></svg>`;
     cell.appendChild(playBadge);
-    const ov=document.createElement('div'); ov.className='cell-overlay';
-    ov.innerHTML=`<div class="cell-overlay-date" style="font-size:9px;color:rgba(255,255,255,0.8);">${esc(fmtShort(reel.date))}</div>`;
+    const ov = document.createElement('div'); ov.className = 'cell-overlay';
+    ov.innerHTML = `<div class="cell-overlay-date" style="font-size:9px;color:rgba(255,255,255,0.8);">${esc(fmtShort(reel.date))}</div>`;
     cell.appendChild(ov);
     cell.addEventListener('click', ()=> openModal(idx, 'reels'));
     grid.appendChild(cell);
   });
 }
 
-/* ── BUILD CELL CONTENT (shared between grid and reels) ── */
+/* ── BUILD CELL CONTENT ── */
 function buildCellContent(cell, post) {
   if (post.canvaUrl) {
-    const wrap=document.createElement('div'); wrap.className='cell-canva-wrap';
-    const iframe=document.createElement('iframe'); iframe.className='cell-canva-iframe';
-    iframe.src=toCanvaEmbedCell(post.canvaUrl); iframe.setAttribute('scrolling','no');
+    const embedUrl = toCanvaEmbedCell(post.canvaUrl);
+    if (!embedUrl) { showPlaceholder(cell); return; }
+    const wrap = document.createElement('div'); wrap.className = 'cell-canva-wrap';
+    const iframe = document.createElement('iframe'); iframe.className = 'cell-canva-iframe';
+    iframe.src = embedUrl; iframe.setAttribute('scrolling','no'); iframe.setAttribute('allow','fullscreen');
     wrap.appendChild(iframe);
-    const blocker=document.createElement('div'); blocker.className='cell-canva-blocker'; wrap.appendChild(blocker);
+    const blocker = document.createElement('div'); blocker.className = 'cell-canva-blocker'; wrap.appendChild(blocker);
     cell.appendChild(wrap);
   } else if (post.media && post.media.length > 0) {
     const first = post.media[0];
     if (first.type === 'video') {
-      const vid=document.createElement('video'); vid.src=first.url; vid.muted=true; vid.loop=true; vid.playsInline=true; vid.preload='metadata';
-      vid.addEventListener('mouseenter',()=>vid.play()); vid.addEventListener('mouseleave',()=>vid.pause());
+      const vid = document.createElement('video');
+      vid.src = first.url; vid.muted = true; vid.loop = true; vid.playsInline = true; vid.preload = 'metadata';
+      vid.addEventListener('mouseenter', ()=>vid.play());
+      vid.addEventListener('mouseleave', ()=>vid.pause());
       cell.appendChild(vid);
       cell.appendChild(makeVideoBadge());
     } else {
-      const img=document.createElement('img'); img.src=first.url; img.loading='lazy'; img.draggable=false;
-      img.onerror=()=>{ img.style.display='none'; showPlaceholder(cell); };
+      const img = document.createElement('img'); img.src = first.url; img.loading = 'lazy'; img.draggable = false;
+      img.onerror = ()=>{ img.style.display='none'; showPlaceholder(cell); };
       cell.appendChild(img);
     }
   } else if (post.imageUrl) {
-    const img=document.createElement('img'); img.src=post.imageUrl; img.loading='lazy'; img.draggable=false;
-    img.onerror=()=>{ img.style.display='none'; showPlaceholder(cell); };
+    const img = document.createElement('img'); img.src = post.imageUrl; img.loading = 'lazy'; img.draggable = false;
+    img.onerror = ()=>{ img.style.display='none'; showPlaceholder(cell); };
     cell.appendChild(img);
   } else {
     showPlaceholder(cell);
@@ -515,144 +544,190 @@ function buildCellContent(cell, post) {
 }
 
 function showPlaceholder(cell) {
-  const ph=document.createElement('div'); ph.className='cell-placeholder';
-  ph.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+  const ph = document.createElement('div'); ph.className = 'cell-placeholder';
+  ph.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
   cell.appendChild(ph);
 }
 
 /* ── MODAL ── */
 function openModal(idx, source) {
-  const post = source==='reels' ? allReels[idx] : displayPosts[idx];
+  const post = source === 'reels' ? allReels[idx] : displayPosts[idx];
   if (!post) return;
   const media = document.getElementById('modalMedia');
   media.innerHTML = '';
 
   if (post.canvaUrl) {
-    const badge=document.createElement('div'); badge.className='canva-badge';
-    badge.innerHTML=`<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#7c3aed"/></svg> Canva`;
+    const embedUrl = toCanvaEmbedModal(post.canvaUrl);
+    const badge = document.createElement('div'); badge.className = 'canva-badge';
+    badge.innerHTML = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#7c3aed"/></svg> Canva`;
     media.appendChild(badge);
-    const clip=document.createElement('div'); clip.className='modal-canva-clip';
-    const iframe=document.createElement('iframe'); iframe.className='modal-canva-frame';
-    iframe.src=toCanvaEmbedModal(post.canvaUrl); iframe.allowFullscreen=true; iframe.setAttribute('loading','lazy');
+    const clip = document.createElement('div'); clip.className = 'modal-canva-clip';
+    const iframe = document.createElement('iframe'); iframe.className = 'modal-canva-frame';
+    iframe.src = embedUrl || ''; iframe.allowFullscreen = true; iframe.setAttribute('loading','lazy');
     clip.appendChild(iframe); media.appendChild(clip);
   } else if (post.media && post.media.length > 1) {
     buildCarousel(media, post.media);
   } else if (post.media && post.media.length === 1) {
     const item = post.media[0];
     if (item.type === 'video') {
-      const vid=document.createElement('video'); vid.className='modal-video'; vid.src=item.url; vid.controls=true; vid.autoplay=true; vid.playsInline=true;
+      const vid = document.createElement('video'); vid.className = 'modal-video'; vid.src = item.url; vid.controls = true; vid.autoplay = true; vid.playsInline = true;
       media.appendChild(vid);
     } else {
-      const wrap=document.createElement('div'); wrap.className='modal-img-wrap';
-      const img=document.createElement('img'); img.className='modal-img'; img.src=item.url;
+      const wrap = document.createElement('div'); wrap.className = 'modal-img-wrap';
+      const img = document.createElement('img'); img.className = 'modal-img'; img.src = item.url;
       wrap.appendChild(img); media.appendChild(wrap);
     }
   } else if (post.imageUrl) {
-    const wrap=document.createElement('div'); wrap.className='modal-img-wrap';
-    const img=document.createElement('img'); img.className='modal-img'; img.src=post.imageUrl;
+    const wrap = document.createElement('div'); wrap.className = 'modal-img-wrap';
+    const img = document.createElement('img'); img.className = 'modal-img'; img.src = post.imageUrl;
     wrap.appendChild(img); media.appendChild(wrap);
   } else {
-    media.innerHTML=`<div class="modal-no-img">Sem imagem</div>`;
+    media.innerHTML = `<div class="modal-no-img">Sem imagem</div>`;
   }
 
-  const captionEl=document.getElementById('modalCaption');
+  const captionEl = document.getElementById('modalCaption');
   if (post.legenda) {
-    captionEl.textContent = post.legenda.length > CAPTION_LIMIT ? post.legenda.slice(0,CAPTION_LIMIT)+'…' : post.legenda;
-    captionEl.style.display='';
-  } else captionEl.style.display='none';
+    captionEl.textContent = post.legenda.length > CAPTION_LIMIT ? post.legenda.slice(0, CAPTION_LIMIT)+'…' : post.legenda;
+    captionEl.style.display = '';
+  } else {
+    captionEl.style.display = 'none';
+  }
 
   document.getElementById('modalMeta').textContent = fmtFull(post.date);
   document.getElementById('modalBackdrop').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
 
 /* ── CAROUSEL ── */
 function buildCarousel(container, items) {
-  let current=0;
-  const carousel=document.createElement('div'); carousel.className='carousel';
-  const track=document.createElement('div'); track.className='carousel-track';
+  let current = 0;
+  const carousel = document.createElement('div'); carousel.className = 'carousel';
+  const track = document.createElement('div'); track.className = 'carousel-track';
   items.forEach(item => {
-    const slide=document.createElement('div'); slide.className='carousel-slide';
-    if (item.type==='video') {
-      const vid=document.createElement('video'); vid.src=item.url; vid.controls=true; vid.playsInline=true; slide.appendChild(vid);
+    const slide = document.createElement('div'); slide.className = 'carousel-slide';
+    if (item.type === 'video') {
+      const vid = document.createElement('video'); vid.src = item.url; vid.controls = true; vid.playsInline = true; slide.appendChild(vid);
     } else {
-      const img=document.createElement('img'); img.src=item.url; img.loading='lazy'; slide.appendChild(img);
+      const img = document.createElement('img'); img.src = item.url; img.loading = 'lazy'; slide.appendChild(img);
     }
     track.appendChild(slide);
   });
   carousel.appendChild(track);
-  const prev=document.createElement('button'); prev.className='carousel-arrow prev'; prev.textContent='‹'; prev.disabled=true;
-  const next=document.createElement('button'); next.className='carousel-arrow next'; next.textContent='›';
-  const dotsEl=document.createElement('div'); dotsEl.className='carousel-dots';
-  const dots=items.map((_,i)=>{ const d=document.createElement('div'); d.className='carousel-dot'+(i===0?' active':''); d.addEventListener('click',()=>goTo(i)); dotsEl.appendChild(d); return d; });
-  function goTo(n) { current=n; track.style.transform=`translateX(-${current*100}%)`; dots.forEach((d,i)=>d.classList.toggle('active',i===current)); prev.disabled=current===0; next.disabled=current===items.length-1; }
-  prev.addEventListener('click',()=>goTo(current-1)); next.addEventListener('click',()=>goTo(current+1));
+  const prev = document.createElement('button'); prev.className = 'carousel-arrow prev'; prev.textContent = '‹'; prev.disabled = true;
+  const next = document.createElement('button'); next.className = 'carousel-arrow next'; next.textContent = '›';
+  const dotsEl = document.createElement('div'); dotsEl.className = 'carousel-dots';
+  const dots = items.map((_,i)=>{
+    const d = document.createElement('div'); d.className = 'carousel-dot'+(i===0?' active':'');
+    d.addEventListener('click', ()=>goTo(i)); dotsEl.appendChild(d); return d;
+  });
+  function goTo(n) {
+    current = n; track.style.transform = `translateX(-${current*100}%)`;
+    dots.forEach((d,i)=>d.classList.toggle('active', i===current));
+    prev.disabled = current===0; next.disabled = current===items.length-1;
+  }
+  prev.addEventListener('click', ()=>goTo(current-1));
+  next.addEventListener('click', ()=>goTo(current+1));
   carousel.appendChild(prev); carousel.appendChild(next); carousel.appendChild(dotsEl);
   container.appendChild(carousel);
 }
 
-function handleBackdropClick(e) { if (e.target===document.getElementById('modalBackdrop')) closeModal(); }
-function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); document.body.style.overflow=''; }
+function handleBackdropClick(e) { if (e.target === document.getElementById('modalBackdrop')) closeModal(); }
+function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); document.body.style.overflow = ''; }
 
 /* ── SETTINGS ── */
 function toggleSettings() {
-  settingsOpen=!settingsOpen;
-  document.getElementById('settingsDropdown').classList.toggle('open',settingsOpen);
-  document.getElementById('btnSettings').classList.toggle('active',settingsOpen);
+  settingsOpen = !settingsOpen;
+  document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
+  document.getElementById('btnSettings').classList.toggle('active', settingsOpen);
 }
 function applySettings() {
-  const showBio=document.getElementById('toggleBio').checked;
-  const showHL=document.getElementById('toggleHighlights').checked;
-  ['profileName','profileBio','profileLink'].forEach(id=>document.getElementById(id).style.display=showBio?'':'none');
-  document.getElementById('highlightsSection').style.display=showHL?'':'none';
+  const showBio = document.getElementById('toggleBio').checked;
+  const showHL  = document.getElementById('toggleHighlights').checked;
+  ['profileName','profileBio','profileLink'].forEach(id => document.getElementById(id).style.display = showBio ? '' : 'none');
+  document.getElementById('highlightsSection').style.display = showHL ? '' : 'none';
 }
-function setSortMode(mode) {
-  if (dragMode) return;
-  sortMode=mode;
-  document.getElementById('radioDate').classList.toggle('checked',mode==='date');
-  document.getElementById('radioCustom').classList.toggle('checked',mode==='custom');
-  initDisplayPosts(displayPosts); renderGrid();
-}
-document.addEventListener('click',e=>{
+document.addEventListener('click', e => {
   if (!settingsOpen) return;
-  if (!document.getElementById('settingsDropdown').contains(e.target)&&!document.getElementById('btnSettings').contains(e.target)) {
-    settingsOpen=false; document.getElementById('settingsDropdown').classList.remove('open'); document.getElementById('btnSettings').classList.remove('active');
+  if (!document.getElementById('settingsDropdown').contains(e.target) && !document.getElementById('btnSettings').contains(e.target)) {
+    settingsOpen = false;
+    document.getElementById('settingsDropdown').classList.remove('open');
+    document.getElementById('btnSettings').classList.remove('active');
   }
 });
 
 /* ── DRAG & DROP ── */
 function toggleReorder() {
   if (dragMode) { cancelReorder(); return; }
-  dragMode=true; originalPosts=displayPosts.map(p=>({...p}));
-  document.getElementById('reorderBar').classList.add('visible');
-  document.getElementById('reorderBtn').textContent='✕ Cancelar edição';
+  dragMode = true;
+  originalPosts = displayPosts.map(p=>({...p}));
+  document.getElementById('toolbarNormal').style.display  = 'none';
+  document.getElementById('toolbarReorder').style.display = 'flex';
   renderGrid();
 }
 function cancelReorder() {
-  dragMode=false; displayPosts=originalPosts.map(p=>({...p}));
-  document.getElementById('reorderBar').classList.remove('visible');
-  document.getElementById('reorderBtn').textContent='⇅ Editar ordem';
+  dragMode = false;
+  displayPosts = originalPosts.map(p=>({...p}));
+  document.getElementById('toolbarNormal').style.display  = 'flex';
+  document.getElementById('toolbarReorder').style.display = 'none';
   renderGrid();
 }
-function onDragStart(e) { if (!dragMode){e.preventDefault();return;} dragSrcIdx=parseInt(e.currentTarget.dataset.idx); e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',dragSrcIdx); }
-function onDragOver(e) { if (!dragMode)return; e.preventDefault(); e.dataTransfer.dropEffect='move'; document.querySelectorAll('.cell').forEach(c=>c.classList.remove('drag-over')); e.currentTarget.classList.add('drag-over'); }
-function onDrop(e) { e.preventDefault(); if(!dragMode||dragSrcIdx===null)return; const dest=parseInt(e.currentTarget.dataset.idx); if(dragSrcIdx===dest)return; const moved=displayPosts.splice(dragSrcIdx,1)[0]; displayPosts.splice(dest,0,moved); dragSrcIdx=null; renderGrid(); }
-function onDragEnd(e) { dragSrcIdx=null; document.querySelectorAll('.cell').forEach(c=>{c.classList.remove('dragging');c.classList.remove('drag-over');}); }
 
-async function saveReorder() {
-  const btn=document.querySelector('.btn-save'); btn.textContent='Salvando…'; btn.disabled=true;
-  const sortedDates=[...originalPosts].map(p=>p.date).sort((a,b)=>{if(!a&&!b)return 0;if(!a)return 1;if(!b)return-1;return b.localeCompare(a);});
-  const updates=displayPosts.map((p,i)=>({id:p.id,date:sortedDates[i]||null}));
-  try {
-    const res=await fetch('/api/update-posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(updates)});
-    if(!res.ok) throw new Error(await res.text());
-    displayPosts=displayPosts.map((p,i)=>({...p,date:sortedDates[i]||null}));
-    dragMode=false; document.getElementById('reorderBar').classList.remove('visible'); document.getElementById('reorderBtn').textContent='⇅ Editar ordem';
-    renderGrid(); showToast('✓ Datas atualizadas no Notion!');
-  } catch(e) { alert('Erro ao salvar: '+e.message); btn.textContent='Reagendar ✓'; btn.disabled=false; }
+function onDragStart(e) {
+  if (!dragMode) { e.preventDefault(); return; }
+  dragSrcIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', dragSrcIdx);
+}
+function onDragOver(e) {
+  if (!dragMode) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.cell').forEach(c=>c.classList.remove('drag-over'));
+  e.currentTarget.classList.add('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  if (!dragMode || dragSrcIdx === null) return;
+  const dest = parseInt(e.currentTarget.dataset.idx);
+  if (dragSrcIdx === dest) return;
+  const moved = displayPosts.splice(dragSrcIdx, 1)[0];
+  displayPosts.splice(dest, 0, moved);
+  dragSrcIdx = null;
+  renderGrid();
+}
+function onDragEnd(e) {
+  dragSrcIdx = null;
+  document.querySelectorAll('.cell').forEach(c=>{ c.classList.remove('dragging'); c.classList.remove('drag-over'); });
 }
 
-function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
+async function saveReorder() {
+  const btn = document.getElementById('btnSave');
+  btn.textContent = 'Salvando…'; btn.disabled = true;
+  const sortedDates = [...originalPosts].map(p=>p.date).sort((a,b)=>{
+    if (!a&&!b) return 0; if (!a) return 1; if (!b) return -1; return b.localeCompare(a);
+  });
+  const updates = displayPosts.map((p,i)=>({ id: p.id, date: sortedDates[i]||null }));
+  try {
+    const res = await fetch('/api/update-posts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(updates) });
+    if (!res.ok) throw new Error(await res.text());
+    displayPosts = displayPosts.map((p,i)=>({...p, date: sortedDates[i]||null}));
+    dragMode = false;
+    document.getElementById('toolbarNormal').style.display  = 'flex';
+    document.getElementById('toolbarReorder').style.display = 'none';
+    btn.textContent = 'Reagendar ✓'; btn.disabled = false;
+    renderGrid();
+    showToast('✓ Datas atualizadas no Notion!');
+  } catch(e) {
+    alert('Erro ao salvar: '+e.message);
+    btn.textContent = 'Reagendar ✓'; btn.disabled = false;
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+}
 
 loadData();
 </script>
